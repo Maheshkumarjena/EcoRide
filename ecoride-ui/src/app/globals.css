@@ -179,3 +179,12 @@
     --chart-5: 263.4 70% 50.4%;
   }
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

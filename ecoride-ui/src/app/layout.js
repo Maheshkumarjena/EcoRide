@@ -5,6 +5,9 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import DarkModeToggle from "@/components/ui/theme-toggle";
 import Navbar from "@/components/Navbar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function RootLayout({ children }) {
   return (
@@ -12,15 +15,20 @@ export default function RootLayout({ children }) {
       <body
         className={` antialiased `}
       >
+
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          >
-                  
+            >
+            <SidebarProvider>
+            <AppSidebar />
+
             <BackgroundBeamsWithCollision className="h-screen ">
               <div className="h-screen flex flex-col  w-screen ">
+              {/* <SidebarTrigger /> */}
+
             {children}
 
               </div>
@@ -28,6 +36,7 @@ export default function RootLayout({ children }) {
 
         </BackgroundBeamsWithCollision>
 
+        </SidebarProvider>
 
           </ThemeProvider>
       </body>
