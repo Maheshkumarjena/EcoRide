@@ -41,25 +41,10 @@ const Typewriter = () => {
   }, [i, j, isDeleting, words]); // Re-run the effect when these dependencies change
 
   return (
-    <div className="overflow-x-hidden absolute lg:relative top-0 w-[100vw] h-[40vh] lg:h-auto">
-      <Image
-        className="hidden lg:flex blur-[0px]"
-        // src="/bgImage.webp" // Path to your image in the public folder
-        alt="Large Image"
-        width={100}  // Define the width you want
-        height={80} // Define the height you want
-        layout="responsive" // Automatically adjust the image size
-        objectFit="cover" // Maintain aspect ratio and cover the container
-      />
-      <Image
-        className="blur-[0px] flex lg:hidden"
-        // src="/bgImage.webp" // Path to your image in the public folder
-        alt="Background Image"
-        width={100}  // Define the width you want
-        height={80} // Define the height you want
-        layout="responsive" // Automatically adjust the image size
-        objectFit="cover" // Maintain aspect ratio and cover the container
-      />
+    <div className="overflow-x-hidden absolute lg:relative top-0 w-[100vw] h-[40vh] lg:h-full">
+      <div>
+
+      </div>
       <div className="absolute inset-0 top-[-10vw] flex justify-center flex-col items-center">
         <h1 id="typewriter" className="px-2 py-2 text-xl font-mono md:text-4xl font-bold text-gray-200 border-0">
           {currentWord}
