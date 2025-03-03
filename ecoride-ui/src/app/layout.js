@@ -4,6 +4,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import DarkModeToggle from "@/components/ui/theme-toggle";
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({ children }) {
   return (
@@ -18,8 +19,13 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
                   
-            <BackgroundBeamsWithCollision className="h-screen">
+            <BackgroundBeamsWithCollision className="h-screen ">
+              <div className="h-screen flex flex-col  w-screen ">
             {children}
+
+              </div>
+            <Navbar />
+
         </BackgroundBeamsWithCollision>
 
 

@@ -17,7 +17,7 @@ export default function SignupForm() {
   };
   return (
     <div
-      className="w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
+      className=" w-screen md:w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">
         Welcome to EcoRide
       </h2>

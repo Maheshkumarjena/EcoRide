@@ -11,7 +11,6 @@ export default function Home() {
       {/* <Search/> */}
       <Typewriter/>
       <ThemeAuth/>
-      <Navbar />
 
     </>
   );

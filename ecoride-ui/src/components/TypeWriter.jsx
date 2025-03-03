@@ -46,7 +46,7 @@ const Typewriter = () => {
 
       </div>
       <div className="absolute inset-0 top-[-10vw] flex justify-center flex-col items-center">
-        <h1 id="typewriter" className="px-2 py-2 text-xl font-mono md:text-4xl font-bold text-gray-200 border-0">
+        <h1 id="typewriter" className="px-2 py-2 text-xl font-mono md:text-4xl font-bold text-purple-800 dark:text-gray-200 border-0">
           {currentWord}
         </h1>
         <div className="flex flex-row gap-6">
