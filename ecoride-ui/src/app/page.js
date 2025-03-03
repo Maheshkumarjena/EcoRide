@@ -2,11 +2,12 @@ import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-w
 import Switch from "@/components/ui/theme-toggle";
 import Navbar from "@/components/Navbar";
 import ThemeAuth from "@/components/Theme-Auth";
-import SignUp from "./SignUp/page";
+import Typewriter from "@/components/TypeWriter";
 
 export default function Home() {
   return (
     <>
+      <Typewriter/>
       <ThemeAuth/>
       <Navbar />
 

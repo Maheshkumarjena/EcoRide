@@ -8,7 +8,7 @@
     "css": "src/app/globals.css",
     "baseColor": "zinc",
     "prefix": "",
-    "cssVariables": false
+    "cssVariables": true
 
   },
   "aliases": {

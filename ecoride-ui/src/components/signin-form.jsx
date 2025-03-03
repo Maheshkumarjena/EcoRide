@@ -10,7 +10,7 @@ import {
 } from "@tabler/icons-react";
 import Link from 'next/link'
 
-export default function SignupForm() {
+export default function SigninForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted");
@@ -25,16 +25,7 @@ export default function SignupForm() {
         Join the Ride, Change the Future!    
       </p>
       <form className="my-8 z-0" onSubmit={handleSubmit}>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="firstname">First name</Label>
-            <Input id="firstname" placeholder="Tyler" type="text" />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="lastname">Last name</Label>
-            <Input id="lastname" placeholder="Durden" type="text" />
-          </LabelInputContainer>
-        </div>
+        
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
@@ -47,7 +38,7 @@ export default function SignupForm() {
         <button
           className="bg-gradient-to-br cursor-pointer relative group/btn from-purple-600 dark:from-purple-700 dark:to-purple-700 to-purple-400 block w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit">
-          Sign up &rarr;
+          Sign in &rarr;
           <BottomGradient />
         </button>
 
@@ -64,12 +55,12 @@ export default function SignupForm() {
             </span>
             <BottomGradient />
           </button>
-<p className='mb-[1px] text-sm  '>          Already have an account ?  </p>
-      <Link href='SignIn'>
+<p className='mb-[1px] text-sm  '>          Don't have an account ?  </p>
+      <Link href='SignUp'>
           <button
             className="relative cursor-pointer group/btn flex items-center justify-center px-4 w-full text-purple-900 dark:text-purple-300 rounded-md h-10 font-medium shadow-input bg-purple-50 dark:bg-purple-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button">
-              Sign in
+              Sign up
             <BottomGradient />
           </button>
           </Link>
