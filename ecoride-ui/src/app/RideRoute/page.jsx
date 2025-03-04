@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-const RideMap=dynamic(()=>import("@/components/Ride-map")); // ✅ No `ssr: false`)
+const RideMap=dynamic(()=>import("@/components/Ride-map"),{ssr:false,}); // ✅ No `ssr: false`)
 // const RideMap = dynamic(() => import(@)); // ✅ No `ssr: false`
 
 const RideRoute = () => {

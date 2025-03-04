@@ -1,10 +1,33 @@
 "use client"; // Ensure this is a Client Component
+import dynamic from "next/dynamic";
 import FitMapBounds from "./ui/FitMapBounds";
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Polyline ,Marker,Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css"; // ✅ Ensure Leaflet styles are loaded
 import L from "leaflet";
 import polyline from "@mapbox/polyline"; // ✅ Import polyline decoder
+
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Polyline = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Polyline),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Popup),
+  { ssr: false }
+);
+
+
 
 const API_KEY = "62e7db61-374d-4be8-b22d-43407c2cd56f"; // Replace with your actual API key
 
