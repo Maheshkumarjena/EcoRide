@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import axios from "axios";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -11,13 +12,46 @@ import {
 import Link from 'next/link'
 
 export default function SigninForm() {
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+
+
+const [email, setEmail] = React.useState("");
+const [password, setPassword] = React.useState("");
+
+
+const SignInUser=async()=>{
+  console.log('EMAIL PASSWORD:', email , password)
+  if(!email || !password){
+    alert('All fields are required!')
+    return;
+  }
+  try{
+    const response = await axios.post(`${API_URL}/users/login`, {
+      email,
+      password,
+    },{
+      withCredentials:true
+    });
+    console.log("User logged in successfully:", response.data);
+  } catch (error) {
+    console.error("Error logging in user:", error.response?.data || error.message);
+  }
+}
+
+
+
+
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    SignInUser();
     console.log("Form submitted");
   };
   return (
     <div
-      className="w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
+      className="w-md w-full my-[10vh] mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">
         Welcome to EcoRide
       </h2>
@@ -28,11 +62,11 @@ export default function SigninForm() {
         
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
+          <Input id="email" placeholder="projectmayhem@fc.com" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" placeholder="••••••••" type="password" />
+          <Input id="password" placeholder="••••••••" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />
         </LabelInputContainer>
        
         <button

@@ -7,8 +7,8 @@ export const registerUser = async (req, res, next) => {
     // if (!errors.isEmpty()) {
     //     return res.status(400).json({ errors: errors.array() });
     // }
-
-    const { fullname, email, password } = req.body;
+    console.log("inside registerUser controller , req.body", req.body);
+    const { firstname,lastname, email, password } = req.body;
 
     const isUserAlready = await userModel.findOne({ email });
 
@@ -18,23 +18,28 @@ export const registerUser = async (req, res, next) => {
 
     const hashedPassword = await userModel.hashPassword(password);
 
+    
     const user = await createUser({
-        firstname: fullname.firstname,
-        lastname: fullname.lastname,
+     firstname,
+        lastname,
         email,
         password: hashedPassword
     });
 
-    const token = user.generateAuthToken();
+    user.save();
 
-    res.status(201).json({ token, user });
+    console.log("user at registerUser controller", user);
+
+    const token = user.generateAuthToken(user);
+
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+    res.status(201).json({ token, user: userWithoutPassword });
 
 
 }
 
 export const loginUser = async (req, res, next) => {
-
-    
 
     const { email, password } = req.body;
 
@@ -44,17 +49,21 @@ export const loginUser = async (req, res, next) => {
         return res.status(401).json({ message: 'Invalid email or password' });
     }
     
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await user.comparePassword(password, user.password);
 
     if (!isMatch) {
         return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = user.generateAuthToken();
+    const token = user.generateAuthToken(userModel);
 
-    res.cookie('token', token);
-
-    res.status(200).json({ token, user });
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+    
+    
+    res.cookie('token', token,{ httpOnly: true , secure: true, sameSite: 'none' });
+    
+    res.status(200).json({ token, user: userWithoutPassword });
 }
 
 export const getUserProfile = async (req, res, next) => {

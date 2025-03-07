@@ -14,6 +14,8 @@ export const createUser = async ({
         email,
         password
     })
+    
+    console.log("user at user.service",user)
 
     return user;
 }

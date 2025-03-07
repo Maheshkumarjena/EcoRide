@@ -1,17 +1,42 @@
-const mongoose = require('mongoose');
-
+import mongoose from "mongoose";
 
 const rideSchema = new mongoose.Schema({
-    user: {
+    provider: { // The user offering the ride
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: "user",
         required: true
     },
-    captain: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'captain',
-    },
-    pickup: {
+    riders: [ // Multiple riders booking the ride
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "user"
+            },
+            seatsBooked: {
+                type: Number,
+                required: true
+            },
+            paymentID: {
+                type: String, // Store each rider's transaction ID
+            },
+            paymentStatus: {
+                type: String,
+                enum: ["pending", "holding", "released"],
+                default: "pending",
+            },
+            otp: {
+                type: String,
+                select: false,
+                required: true
+            },
+            status: {
+                type: String,
+                enum: ["pending_otp", "in_progress", "completed", "cancelled"],
+                default: "pending_otp",
+            }
+        }
+    ],
+    startingPoint: {
         type: String,
         required: true,
     },
@@ -19,38 +44,40 @@ const rideSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    fare: {
+
+    farePerSeat: { // Fare is now per seat, not per ride
         type: Number,
         required: true,
     },
-
     vehicleType: {
         type: String,
-        enum: ['auto', 'car', 'moto'],
+        enum: ["auto", "car", "moto"],
         required: true,
     },
-
+    totalSeatsAvailable: {
+        type: Number,
+        required: true,
+    },
     duration: {
-        type: Number,
-    }, // in seconds
-
-    distance: {
-        type: Number,
-    }, // in meters
-
-    paymentID: {
-        type: String,
+        type: Number, // in seconds
     },
-    
-    signature: {
-        type: String,
-    },
-
-    otp: {
-        type: String,
-        select: false,
+    startTime: {
+        type: Date,
         required: true,
     },
-})
+    stops:[{
+        type: String,
+    }]
+    ,
+    distance: {
+        type: Number, // in meters
+    },
+    rideStatus: { // Overall ride status
+        type: String,
+        enum: ["available", "pending", "in_progress", "completed", "cancelled"],
+        default: "available",
+    }
+});
 
-module.exports = mongoose.model('ride', rideSchema);
+const rideModel = mongoose.model("ride", rideSchema);
+export default rideModel;

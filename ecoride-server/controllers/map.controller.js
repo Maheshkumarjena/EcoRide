@@ -1,5 +1,5 @@
-import { getAddressCoordinates } from "../services/map.service";
-import { getDistanceTime } from "../services/map.service";
+import { getAddressCoordinates } from "../services/map.service.js";
+import { getDistanceTime } from "../services/map.service.js";
 import { validationResult } from "express-validator";
 
 export const getCoordinates= async (req,res,next)=>{
@@ -19,7 +19,7 @@ export const getCoordinates= async (req,res,next)=>{
     }
 }
 
-export const getDistanceTime= async (req,res,next)=>{
+export const getDistanceAndTime= async (req,res,next)=>{
     try{
 
         const errors = validationResult(req);
