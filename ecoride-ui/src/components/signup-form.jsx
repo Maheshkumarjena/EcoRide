@@ -17,7 +17,7 @@ export default function SignupForm() {
   const router = useRouter()
 
   // Backend URL should be placed in an environment variable
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+  const API_URL = process.env.SERVER_URL || "https://ecoride-m6zs.onrender.com";
 
   const registerUser = async () => {
     if (!firstname || !lastname || !email || !password) {

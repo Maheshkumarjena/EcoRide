@@ -11,7 +11,8 @@ dotenv.config();
 
 const app = express();
 connectToDb();
-const FRONTEND_DOMAIN=process.env.NEXT_FRONTEND_URL || "";
+
+const FRONTEND_DOMAIN=process.env.NEXT_FRONTEND_URL || "https://eco-ride-virid.vercel.app";
 console.log("FRONTEND_DOMAIN",FRONTEND_DOMAIN);
 app.use(cors({
     origin: FRONTEND_DOMAIN,
