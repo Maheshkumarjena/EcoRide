@@ -9,8 +9,10 @@ import Navbar from "@/components/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+dotenv.config();
 
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body

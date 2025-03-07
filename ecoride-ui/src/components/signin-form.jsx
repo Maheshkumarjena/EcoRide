@@ -13,7 +13,8 @@ import Link from 'next/link'
 
 export default function SigninForm() {
 
-const API_URL = process.env.SERVER_URL || "https://ecoride-m6zs.onrender.com";
+const API_URL = process.env.SERVER_URLNEXT_PUBLIC_SERVER_URL|| "https://ecoride-m6zs.onrender.com";
+console.log("server url:", API_URL);
 
 
 const [email, setEmail] = React.useState("");
