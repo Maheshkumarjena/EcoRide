@@ -10,24 +10,35 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import Link from 'next/link'
+import {motion} from 'framer-motion'
+import { useRouter } from 'next/navigation'; // For Next.js App Router
+import Loader from "./ui/Loader";
+import { set } from "lodash";
 
 export default function SigninForm() {
 
-const API_URL = process.env.SERVER_URLNEXT_PUBLIC_SERVER_URL|| "https://ecoride-m6zs.onrender.com";
+const router = useRouter();
+
+const API_URL = process.env.NEXT_PUBLIC_SERVER_URL|| "https://ecoride-m6zs.onrender.com";
 console.log("server url:", API_URL);
 
 
 const [email, setEmail] = React.useState("");
 const [password, setPassword] = React.useState("");
+const [message,setMessages] = React.useState("");
+const [loading,setLoading] = React.useState(false);
+
 
 
 const SignInUser=async()=>{
+  setLoading(true);
   console.log('EMAIL PASSWORD:', email , password)
   if(!email || !password){
     alert('All fields are required!')
     return;
   }
   try{
+   
     const response = await axios.post(`${API_URL}/users/login`, {
       email,
       password,
@@ -35,8 +46,21 @@ const SignInUser=async()=>{
       withCredentials:true
     });
     console.log("User logged in successfully:", response.data);
-  } catch (error) {
+    setLoading(false);
+    setMessages("User logged in successfully. Redirecting to home...");
+    setTimeout(() => {
+      router.push('/')
+      setMessages("");
+    }, 2000);
+
+  } 
+  catch (error) {
     console.error("Error logging in user:", error.response?.data || error.message);
+    setLoading(false);
+    setMessages(`Error: ${error.response?.data.message || error.message}`);
+    setTimeout(() => {
+      setMessages("");
+    }, 2000);
   }
 }
 
@@ -51,7 +75,10 @@ const SignInUser=async()=>{
     console.log("Form submitted");
   };
   return (
-    <div
+    <motion.div
+    initial={{ opacity: 0 }} // Initial state
+    animate={{ opacity: 1 }} // Final state
+    transition={{ duration: 1, ease: "easeInOut" }}
       className="w-md w-full my-[10vh] mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">
         Welcome to EcoRide
@@ -101,7 +128,9 @@ const SignInUser=async()=>{
           </Link>
         </div>
       </form>
-    </div>
+      {loading && <Loader />}
+      {message && <p className='text-red-500'>{message}</p>}
+    </motion.div>
   );
 }
 

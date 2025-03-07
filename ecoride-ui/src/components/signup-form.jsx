@@ -7,12 +7,18 @@ import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'; // For Next.js App Router
+import { motion } from "framer-motion";
+import { set } from "lodash";
+import Loader from "./ui/Loader";
+
 
 export default function SignupForm() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading , setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const router = useRouter()
 
@@ -21,6 +27,8 @@ export default function SignupForm() {
   console.log("server url:", API_URL);
 
   const registerUser = async () => {
+    setLoading(true);
+
     if (!firstname || !lastname || !email || !password) {
       alert("All fields are required!");
       return;
@@ -32,14 +40,23 @@ export default function SignupForm() {
         lastname, // Ensure it's a string
         email,
         password,
-      });
-
+      }
+    );
       console.log("User registered successfully:", response.data);
+      setLoading(false);
+      setMessage("User registered successfully. Redirecting to sign in page...");
       setTimeout(() => {
         router.push('/SignIn')
+        setMessage("");
       }, 2000)
-    } catch (error) {
+    } 
+    catch (error) {
       console.error("Error registering user:", error.response?.data || error.message);
+      setLoading(false);
+      setMessage(`Error: ${error.response?.data.message || error.message}`);
+      setTimeout(() => {
+        setMessage("");
+      }, 2000);
     }
   };
 
@@ -49,7 +66,11 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="my-[10vh] w-md w-full mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
+    
+    <motion.div initial={{ opacity: 0 }} // Initial state
+    animate={{ opacity: 1 }} // Final state
+    transition={{ duration: 1, ease: "easeInOut" }}
+    className="my-[10vh] w-md w-full mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">Welcome to EcoRide</h2>
       <p className="text-purple-600 text-sm max-w-sm mt-2 dark:text-purple-300">Join the Ride, Change the Future!</p>
       
@@ -135,7 +156,9 @@ export default function SignupForm() {
           </Link>
         </div>
       </form>
-    </div>
+      {loading && <Loader />}
+      {message && <p className="text-purple-800 dark:text-purple-200">{message}</p>}
+    </motion.div>
   );
 }
 
