@@ -4,6 +4,8 @@ import rideModel from "../models/ride.model.js";
 import crypto from 'crypto';
 import { getCoordinates } from "./map.controller.js";
 import { getRouteCoordinates } from "../services/map.service.js";
+import { calculateDistanceWithCoords } from "../services/map.service.js";
+import { processRides } from "../services/map.service.js";
 
 export const generateOtpetOtp = async (num) => {
     function generateOtp(num) {
@@ -77,7 +79,7 @@ export const findRide = async (req, res) => {
         const onboarding = await getCoordinates(req.body.onboarding);
         console.log("startingpoint and destination in ride.controller.js", startingPoint, destination);
 
-        const { startTime, minPrice, maxPrice, maxDistance = 5 } = req.body;
+        const { startTime, minPrice, maxPrice, maxDistance = 20 } = req.body;
 
         let query = {};
 
@@ -101,6 +103,7 @@ export const findRide = async (req, res) => {
         }
 
         let rides = await rideModel.find(query).sort({ startTime: 1 });
+        console.log("rides in findRide controller==========================>", rides)
 
         // 4️⃣ Search by Onboarding Point (Coordinate Proximity)
         if (onboarding && onboarding.coordinates) {
@@ -114,7 +117,7 @@ export const findRide = async (req, res) => {
 
                 if (routeCoordinates) {
                     const isNear = routeCoordinates.some(coord => {
-                        const distance = calculateDistance(
+                        const distance = calculateDistanceWithCoords(
                             onboarding.coordinates.lat,
                             onboarding.coordinates.lng,
                             coord.lat,
@@ -134,6 +137,8 @@ export const findRide = async (req, res) => {
             return res.status(404).json({ message: "No rides found matching your criteria" });
         }
 
+        // rides = processRides(rides);
+        // console.log("rides affter procress===================================",rides)
         res.status(200).json({ message: "Rides found successfully", rides });
     } catch (error) {
         console.error(error);

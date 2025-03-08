@@ -2,6 +2,7 @@ import express from "express";
 import { body } from "express-validator";
 import { createRide } from "../controllers/ride.contorller.js";
 import { findRide } from "../controllers/ride.contorller.js";
+import { processRides } from "../services/map.service.js";
 
 const router = express.Router();
 
@@ -23,12 +24,14 @@ router.post(
     [
         body("startingPoint").notEmpty().withMessage("Starting point is required"),
         body("destination").notEmpty().withMessage("Destination is required"),
-        body("onboarding").notEmpty().withMessage("Onboarding point is required"),
         body("minPrice").optional().isNumeric().withMessage("Min price must be a number"),
         body("maxPrice").optional().isNumeric().withMessage("Max price must be a number"),
         body("maxDistance").optional().isNumeric().withMessage("Max distance must be a number"),
     ],
     findRide
 );
+
+
+router.post('/processRides',processRides)
 
 export default router;

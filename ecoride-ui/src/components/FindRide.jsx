@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const FindRide = () => {
+    const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
     const [fromLocation, setFromLocation] = useState("");
     const [toLocation, setToLocation] = useState("");
     const [findDate, setFindDate] = useState("");
@@ -26,13 +27,48 @@ const FindRide = () => {
                 maxPrice: maxPrice ? parseFloat(maxPrice) : null,
                 onboarding: onboarding,
             });
+
+            console.log("Rides before processing:", response.data.rides);
             setFoundRides(response.data.rides);
-            console.log("Found Rides:", response.data.rides);
+
+            if (response.data.rides && response.data.rides.length > 0) {
+                try {
+                    const Rides = await fetchRides(response.data.rides);
+                    console.log("Rides after processing:", Rides);
+                    setFoundRides(Rides); // Update foundRides with processed data
+                } catch (fetchError) {
+                    console.error("Error processing rides:", fetchError);
+                    // Optionally, keep the original foundRides or handle the error
+                }
+            } else {
+              console.log("No rides to process");
+            }
+
+            console.log("Final Found Rides:", foundRides);
+
         } catch (error) {
             console.error("Error finding rides:", error);
             setFoundRides([]);
         }
     };
+
+
+
+        const fetchRides = async (rides) => {
+            console.log("fetched ride called =======================",rides)
+            try {
+                const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
+    
+                const response = await axios.post(`${API_URL}/rides/processRides`,rides);
+                setFoundRides(response.data.rides);
+                console.log("Found Rides:::::::", response.data.rides);
+            } catch (error) {
+                console.error("Error finding rides:", error);
+                setFoundRides([]);
+            }
+          };
+      
+     
 
     return (
         <div className="p-4 pb-20">

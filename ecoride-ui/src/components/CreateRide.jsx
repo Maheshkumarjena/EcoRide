@@ -77,10 +77,10 @@ const CreateRide = () => {
                 setUser(userData);
             } else {
                 localStorage.removeItem('user');
-                router.push('/signin');
+                router.push('/SignIn');
             }
         } else {
-            router.push('/signin');
+            router.push('/SignIn');
         }
     }, [router]);
 

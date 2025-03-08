@@ -29,8 +29,95 @@ export const getAddressCoordinates = async (address) => {
   }
 };
 
+export const coordinatesToLocation = async (latitude, longitude) => {
+  const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Replace with your GraphHopper API Key
+  console.log("API key at coordinatesToLocation:", apiKey);
+
+  if (!apiKey) {
+      console.error("GraphHopper API key not found in environment variables.");
+      return "API key not configured";
+  }
+
+  try {
+      const response = await fetch(
+          `https://graphhopper.com/api/1/geocode?key=${apiKey}&reverse=true&point=${latitude},${longitude}`
+      );
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("API Response Data:", data);
+
+      if (data.hits && data.hits.length > 0) {
+          const { name, street, city, country } = data.hits[0];
+
+          // Construct formatted address dynamically
+          const formattedAddress = [name, street, city, country].filter(Boolean).join(", ");
+
+          return formattedAddress || "Location details not available";
+      } else {
+          return "Location not found";
+      }
+  } catch (error) {
+      console.error("Error converting coordinates to location:", error.message);
+      return "Error fetching location";
+  }
+};
+
+
+export const processRides= async (rides, apiKey)=> {
+  const processedRides = await Promise.all(rides.map(async (ride) => {
+      if (ride === null || !ride.startingPoint || !ride.destination) {
+          return null; // Skip null or incomplete rides
+      }
+
+      const startLat = ride.startingPoint.coordinates.lat;
+      const startLng = ride.startingPoint.coordinates.lng;
+      const destLat = ride.destination.coordinates.lat;
+      const destLng = ride.destination.coordinates.lng;
+
+      const startLocation = await coordinatesToLocation(startLat, startLng, apiKey);
+      const destinationLocation = await coordinatesToLocation(destLat, destLng, apiKey);
+
+      if (startLocation && destinationLocation){
+        return {
+            ...ride.toObject(), // Create a copy of the ride object
+            startingPointLocation: startLocation,
+            destinationLocation: destinationLocation,
+        };
+      }
+      return null;
+  }));
+
+  return processedRides.filter(ride => ride !== null);
+}
+
+
+// Example usage:
+
+//run the example function
+//example();
 // const a=getAddressCoordinates(" sundarpada ,bhubwhenswar , Khorda");
 // console.log(a)
+
+export const calculateDistanceWithCoords=(lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c;
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
 
 
 export const getDistanceTime = async (origin, destination) => {
@@ -92,7 +179,12 @@ export const getAutoCompleteSuggestions = async (input) => {
 
 export const getRouteCoordinates= async (start, end)=> {
   const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Replace with your GraphHopper API key
-  const url = `https://graphhopper.com/api/1/route?point=${encodeURIComponent(start.lat)},${encodeURIComponent(start.lng)}&point=${encodeURIComponent(end.lat)},${encodeURIComponent(end.lng)}&type=json&key=${apiKey}&points_encoded=false`;
+  
+  setTimeout(() => {
+    console.log("start and end at getRouteCoordinates======================================>",start ,end)
+    
+  }, 2000);
+  const url = `https://graphhopper.com/api/1/route?point=${encodeURIComponent(start.coordinates.lat)},${encodeURIComponent(start.coordinates.lng)}&point=${encodeURIComponent(end.coordinates.lat)},${encodeURIComponent(end.coordinates.lng)}&type=json&key=${apiKey}&points_encoded=false`;
 
   try {
       const response = await axios.get(url);
