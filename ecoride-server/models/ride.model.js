@@ -37,11 +37,11 @@ const rideSchema = new mongoose.Schema({
         }
     ],
     startingPoint: {
-        type: String,
+        type: Object,
         required: true,
     },
     destination: {
-        type: String,
+        type: Object,
         required: true,
     },
 

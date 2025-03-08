@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectToDb from './db/db.js';
 import userRoutes from './routes/user.routes.js';
+import rideRoutes from './routes/ride.routes.js';
 // import rideRoutes from './routes/ride.routes.js';
 import mapRoutes from './routes/map.routes.js';
 
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', userRoutes);
-// app.use('/rides', rideRoutes);
+app.use('/rides', rideRoutes);
 app.use('/maps', mapRoutes);
 
 

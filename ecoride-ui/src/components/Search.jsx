@@ -42,7 +42,7 @@ const Search = () => {
   }, [query, handleSearch]);
 
   return (
-    <div className="p-4 bg-purple-200 w-full h-full overflow-scroll  dark:bg-purple-900 absolute top-0 z-40 rounded-md shadow-input">
+    <div className="p-4  w-full h-full overflow-scroll   absolute top-0 z-40 rounded-md shadow-input">
       <input
         type="text"
         placeholder="Search..."
