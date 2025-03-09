@@ -103,9 +103,9 @@ export const findRide = async (req, res) => {
         }
 
         let rides = await rideModel.find(query).sort({ startTime: 1 });
-        console.log("rides in findRide controller==========================>", rides)
+        console.log("rides in findRide controller==========================>", rides);
 
-        // 4️⃣ Search by Onboarding Point (Coordinate Proximity)
+        // 4️⃣ Search by Onboarding Point (Coordinate Proximity) and Stops
         if (onboarding && onboarding.coordinates) {
             rides = await Promise.all(rides.map(async ride => {
                 const startCoords = ride.startingPoint;
@@ -115,8 +115,9 @@ export const findRide = async (req, res) => {
 
                 const routeCoordinates = await getRouteCoordinates(startCoords, endCoords);
 
+                let isNear = false;
                 if (routeCoordinates) {
-                    const isNear = routeCoordinates.some(coord => {
+                    isNear = routeCoordinates.some(coord => {
                         const distance = calculateDistanceWithCoords(
                             onboarding.coordinates.lat,
                             onboarding.coordinates.lng,
@@ -125,9 +126,29 @@ export const findRide = async (req, res) => {
                         );
                         return distance <= parseFloat(maxDistance);
                     });
-                    return isNear ? ride : null;
                 }
-                return null;
+
+                // Check if any stop matches the onboarding point
+                let hasMatchingStop = false;
+                if (ride.stops && ride.stops.length > 0) {
+                    for (const stopName of ride.stops) {
+                        const stopCoordinates = await getCoordinates(stopName);
+                        if (stopCoordinates && stopCoordinates.coordinates) {
+                            const distanceToStop = calculateDistanceWithCoords(
+                                onboarding.coordinates.lat,
+                                onboarding.coordinates.lng,
+                                stopCoordinates.coordinates.lat,
+                                stopCoordinates.coordinates.lng
+                            );
+                            if (distanceToStop <= parseFloat(maxDistance)) {
+                                hasMatchingStop = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return isNear || hasMatchingStop ? ride : null;
             }));
 
             rides = rides.filter(ride => ride !== null);
@@ -137,9 +158,10 @@ export const findRide = async (req, res) => {
             return res.status(404).json({ message: "No rides found matching your criteria" });
         }
 
-        // rides = processRides(rides);
-        // console.log("rides affter procress===================================",rides)
-        res.status(200).json({ message: "Rides found successfully", rides });
+        const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY;
+        const ridesWithLocations = await processRides(rides, apiKey);
+
+        res.status(200).json({ message: "Rides found successfully", rides: ridesWithLocations });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error fetching rides", error: error.message });

@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { getAddressFromCoordinates } from "@/lib/utils"; // Assuming you have this utility function
 
 const FindRide = () => {
     const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
+    const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY 
     const [fromLocation, setFromLocation] = useState("");
     const [toLocation, setToLocation] = useState("");
     const [findDate, setFindDate] = useState("");
@@ -11,12 +13,11 @@ const FindRide = () => {
     const [maxPrice, setMaxPrice] = useState("");
     const [onboarding, setOnboarding] = useState("");
     const [foundRides, setFoundRides] = useState([]);
+    const [ridesWithAddresses, setRidesWithAddresses] = useState([]); // State to store rides with addresses
 
     const handleFind = async (e) => {
         e.preventDefault();
         try {
-            const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
-
             const startTime = findDate && findTime ? `${findDate}T${findTime}:00Z` : null;
 
             const response = await axios.post(`${API_URL}/rides/findRide`, {
@@ -31,44 +32,33 @@ const FindRide = () => {
             console.log("Rides before processing:", response.data.rides);
             setFoundRides(response.data.rides);
 
-            if (response.data.rides && response.data.rides.length > 0) {
-                try {
-                    const Rides = await fetchRides(response.data.rides);
-                    console.log("Rides after processing:", Rides);
-                    setFoundRides(Rides); // Update foundRides with processed data
-                } catch (fetchError) {
-                    console.error("Error processing rides:", fetchError);
-                    // Optionally, keep the original foundRides or handle the error
-                }
-            } else {
-              console.log("No rides to process");
-            }
-
-            console.log("Final Found Rides:", foundRides);
-
         } catch (error) {
             console.error("Error finding rides:", error);
             setFoundRides([]);
         }
     };
 
+    useEffect(() => {
+        async function fetchAddresses() {
+            if (foundRides.length === 0) return;
 
+            const ridesWithAddressesPromises = foundRides.map(async (ride) => {
+                const startAddress = await getAddressFromCoordinates(ride.startingPoint.coordinates.lat, ride.startingPoint.coordinates.lng, MAP_URL);
+                const destinationAddress = await getAddressFromCoordinates(ride.destination.coordinates.lat, ride.destination.coordinates.lng, MAP_URL);
+                return {
+                    ...ride,
+                    startAddress,
+                    destinationAddress,
+                };
+            });
 
-        const fetchRides = async (rides) => {
-            console.log("fetched ride called =======================",rides)
-            try {
-                const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
-    
-                const response = await axios.post(`${API_URL}/rides/processRides`,rides);
-                setFoundRides(response.data.rides);
-                console.log("Found Rides:::::::", response.data.rides);
-            } catch (error) {
-                console.error("Error finding rides:", error);
-                setFoundRides([]);
-            }
-          };
-      
-     
+            const ridesWithAddresses = await Promise.all(ridesWithAddressesPromises);
+            console.log("processed rides with locaiton :", ridesWithAddresses)
+            setRidesWithAddresses(ridesWithAddresses);
+        }
+
+        fetchAddresses();
+    }, [foundRides, API_URL]); // Run when foundRides or API_URL changes
 
     return (
         <div className="p-4 pb-20">
@@ -100,14 +90,14 @@ const FindRide = () => {
                 </div>
                 <button type="submit" className="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">Find Ride</button>
             </form>
-            {foundRides.length > 0 && (
+            {ridesWithAddresses.length > 0 && (
                 <div className="mt-4">
                     <h3 className="text-lg font-semibold mb-2">Found Rides:</h3>
                     <ul>
-                        {foundRides.map((ride) => (
+                        {ridesWithAddresses.map((ride) => (
                             <li key={ride._id} className="border p-2 mb-2 rounded">
-                                <p>From: {ride.startingPoint.coordinates.lat}, {ride.startingPoint.coordinates.lng}</p>
-                                <p>To: {ride.destination.coordinates.lat}, {ride.destination.coordinates.lng}</p>
+                                <p>From: {ride.startAddress}</p>
+                                <p>To: {ride.destinationAddress}</p>
                                 <p>Price: {ride.farePerSeat}</p>
                                 {/* Display other relevant ride details */}
                             </li>
@@ -115,7 +105,7 @@ const FindRide = () => {
                     </ul>
                 </div>
             )}
-            {foundRides.length === 0 && foundRides.length !== undefined && (<div className="mt-4">No rides found.</div>)}
+            {ridesWithAddresses.length === 0 && foundRides.length !== undefined && (<div className="mt-4">No rides found.</div>)}
         </div>
     );
 };
