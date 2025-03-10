@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { createRide } from "../controllers/ride.contorller.js";
+import { createRide, getRideById } from "../controllers/ride.contorller.js";
 import { findRide } from "../controllers/ride.contorller.js";
 import { processRides } from "../services/map.service.js";
 import { getAllRides } from "../controllers/ride.contorller.js";
@@ -35,6 +35,9 @@ router.post(
 
 
 router.get('/getAllRides',getAllRides)
+
+router.get('/:id', getRideById);
+
 
 
 export default router;

@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 // import getFare from "../utils/getFare";
+import mongoose from "mongoose";
 import rideModel from "../models/ride.model.js";
 import crypto from 'crypto';
 import { getCoordinates } from "./map.controller.js";
@@ -183,3 +184,24 @@ export const getAllRides = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+
+export const getRideById = async (req, res) => {
+    console.log('getRideById is hit')
+    try {
+        let id = req.params.id.trim();  // Trim any extra spaces or newlines
+    
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+          return res.status(400).json({ error: 'Invalid Ride ID format' });
+        }
+    
+        const ride = await rideModel.findById(id);
+        if (!ride) {
+          return res.status(404).json({ error: 'Ride not found' });
+        }
+    
+        res.json({ ride });
+      } catch (error) {
+        console.error("Error fetching ride:", error);
+        res.status(500).json({ error: 'Server error' });
+      }
+  };

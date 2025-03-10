@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getAddressFromCoordinates } from "@/lib/utils"; // Assuming you have this utility function
+import RideList from "./RideList";
 
 const FindRide = () => {
     const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
@@ -90,6 +91,7 @@ const FindRide = () => {
                 </div>
                 <button type="submit" className="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">Find Ride</button>
             </form>
+            <RideList rides={ridesWithAddresses} />
             {ridesWithAddresses.length > 0 && (
                 <div className="mt-4">
                     <h3 className="text-lg font-semibold mb-2">Found Rides:</h3>
