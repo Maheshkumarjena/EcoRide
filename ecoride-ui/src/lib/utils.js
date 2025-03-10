@@ -49,23 +49,23 @@ export const getAddressFromCoordinates= async (latitude, longitude, apiKey)=> {
 }
 
 // Example usage within a React component (or any frontend environment):
-async function exampleUsage(latitude, longitude) {
-  const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Make sure you have this in your .env.local file for Next.js, or similar for other frameworks.
+// async function exampleUsage(latitude, longitude) {
+//   const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Make sure you have this in your .env.local file for Next.js, or similar for other frameworks.
 
-  if (!apiKey) {
-    console.error("GraphHopper API key not found in environment variables.");
-    return "API key not configured";
-  }
+//   if (!apiKey) {
+//     console.error("GraphHopper API key not found in environment variables.");
+//     return "API key not configured";
+//   }
 
-  try {
-    const address = await getAddressFromCoordinates(latitude, longitude, apiKey);
-    console.log("Address:", address);
-    return address; // Return the address so you can use it in your component's state, etc.
-  } catch (error) {
-    console.error("Error in example usage:", error);
-    return "Error";
-  }
-}
+//   try {
+//     const address = await getAddressFromCoordinates(latitude, longitude, apiKey);
+//     console.log("Address:", address);
+//     return address; // Return the address so you can use it in your component's state, etc.
+//   } catch (error) {
+//     console.error("Error in example usage:", error);
+//     return "Error";
+//   }
+// }
 
 
-exampleUsage(20.4686,85.8792,"62e7db61-374d-4be8-b22d-43407c2cd56f")
+// exampleUsage(20.4686,85.8792,"62e7db61-374d-4be8-b22d-43407c2cd56f")

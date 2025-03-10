@@ -1,4 +1,5 @@
 "use client"; // Ensure this is a Client Component
+import React from "react";
 import dynamic from "next/dynamic";
 import FitMapBounds from "./ui/FitMapBounds";
 import { useEffect, useState } from "react";
@@ -42,81 +43,142 @@ const customIcon = new L.Icon({
   });
   
 
-const RideMap = ({ start, end }) => {
+const RideMap = ({ start, end , stops,via }) => {
   const [route, setRoute] = useState([]);
   const [bounds, setBounds] = useState(null);
-
-
-   useEffect(() => {
+  
+  useEffect(() => {
     const fetchRoute = async () => {
       if (typeof window === "undefined") return;
 
       try {
-        const response = await fetch(
-          `https://graphhopper.com/api/1/route?point=${start.lat},${start.lng}&point=${end.lat},${end.lng}&profile=car&locale=en&calc_points=true&instructions=true&key=${API_KEY}`
-        );
+        let points = [`${start.lat},${start.lng}`]; // Start with the origin
+
+        if (stops && stops.length > 0) {
+            stops.forEach(stop => {
+                points.push(`${stop.lat},${stop.lng}`); // Add stops in order
+            });
+        }
+
+        if (via && via.length > 0) {
+            via.forEach(viaPoint => {
+                points.push(`${viaPoint.lat},${viaPoint.lng}`); // Add via points in order
+            });
+        }
+
+        points.push(`${end.lat},${end.lng}`); // Add the destination
+
+        let graphHopperUrl = `https://graphhopper.com/api/1/route?profile=car&locale=en&calc_points=true&instructions=false&key=${API_KEY}`;
+
+        points.forEach(point => {
+            graphHopperUrl += `&point=${point}`; // Append all points in order
+        });
+
+        console.log("The api that is called ====>", graphHopperUrl);
+
+        const response = await fetch(graphHopperUrl);
         const data = await response.json();
 
-        console.log("GraphHopper API Response:", data); // ✅ Debugging Log
+        console.log("GraphHopper API Response:", data);
 
         if (data.paths && data.paths.length > 0) {
-          const encodedPoints = data.paths[0].points; // Get encoded polyline string
-          const decodedPoints = polyline.decode(encodedPoints); // ✅ Decode polyline
+          const encodedPoints = data.paths[0].points;
+          const decodedPoints = polyline.decode(encodedPoints);
 
-          console.log("decoded points by polyline",decodedPoints); // ✅ Debugging Log
-          // Convert [lat, lng] pairs to correct Leaflet format
+          console.log("decoded points by polyline", decodedPoints);
+
           const formattedRoute = decodedPoints.map((point) => [point[0], point[1]]);
 
-          console.log("Decoded Route Coordinates:", formattedRoute); // ✅ Debugging Log
+          console.log("Decoded Route Coordinates:", formattedRoute);
 
           setRoute(formattedRoute);
-            // Extract bounding box from response and set bounds
-            const bbox = data.paths[0].bbox;
-            setBounds([
-              [bbox[1], bbox[0]], // South-West (lat, lng)
-              [bbox[3], bbox[2]], // North-East (lat, lng)
-            ]);
+
+          const bbox = data.paths[0].bbox;
+          setBounds([
+            [bbox[1], bbox[0]],
+            [bbox[3], bbox[2]],
+          ]);
         } else {
           console.warn("No route found in API response");
         }
-      } 
-      
-      catch (error) {
+      } catch (error) {
         console.error("Error fetching route:", error);
       }
     };
 
-    fetchRoute();
-  }, [start, end]);
+    if (start && end) {
+      fetchRoute();
+    }
+  }, [start, end, stops, via]);
+
 
   return (
-    <MapContainer
-      center={[25, 75]} // Center map over India
-      zoom={5}
-      style={{ height: "500px", width: "100%", borderRadius: "10px" }}
-      whenCreated={(map) => map.fitBounds(route)}
-    >
-      {/* Base Map */}
-      <TileLayer
+   <MapContainer
+    center={[25, 75]}
+    zoom={5}
+    style={{ height: "500px", width: "100%", borderRadius: "10px" }}
+    whenCreated={(map) => {
+        if (route.length > 0) {
+            map.fitBounds(route);
+        }
+    }}
+>
+    <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      />
-         {/* Markers for Start & End Points */}
-      <Marker position={[start.lat, start.lng]} icon={customIcon}>
-        <Popup>Starting Point</Popup>
-      </Marker>
-      <Marker position={[end.lat, end.lng]} icon={customIcon}>
+    />
+
+
+
+{end && <Marker position={[end.lat, end.lng]} icon={customIcon}
+ eventHandlers={{
+  mouseover: (e) => e.target.openPopup(),
+  mouseout: (e) => e.target.closePopup(),
+}}
+>
         <Popup>Destination</Popup>
-      </Marker>
-
-      {/* Draw Route */}
-      {route.length > 0 && <Polyline positions={route} color="blue" weight={2} />}
+    </Marker>}
 
 
-      {/* Auto-fit map to bounds when route is available */}
-      {bounds && <FitMapBounds bounds={bounds} />}
-    </MapContainer>
-  );
+    
+    {stops && stops.length > 0 && stops.map((stop, index) => (
+        <Marker key={`stop-${index}`} position={[stop.lat, stop.lng]} icon={customIcon}
+        eventHandlers={{
+          mouseover: (e) => e.target.openPopup(),
+          mouseout: (e) => e.target.closePopup(),
+        }}
+        >
+            <Popup>{`Stop ${index + 1}`}</Popup>
+        </Marker>
+    ))}
+
+    {via && via.length > 0 && via.map((viaPoint, index) => (
+        <Marker key={`via-${index}`} position={[viaPoint.lat, viaPoint.lng]} icon={customIcon}
+        eventHandlers={{
+          mouseover: (e) => e.target.openPopup(),
+          mouseout: (e) => e.target.closePopup(),
+        }}
+        >
+            <Popup>{`Via ${index + 1}`}</Popup>
+        </Marker>
+    ))}
+
+{start && <Marker position={[start.lat, start.lng]} icon={customIcon}
+     eventHandlers={{
+                        mouseover: (e) => e.target.openPopup(),
+                        mouseout: (e) => e.target.closePopup(),
+                    }}
+    >
+        <Popup>Starting Point</Popup>
+    </Marker>}
+
+
+
+    {route.length > 0 && <Polyline positions={route} color="blue" weight={2} />}
+
+    {bounds && <FitMapBounds bounds={bounds} />}
+</MapContainer>
+  )
 };
 
 export default RideMap;
