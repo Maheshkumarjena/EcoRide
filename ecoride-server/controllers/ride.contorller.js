@@ -167,3 +167,19 @@ export const findRide = async (req, res) => {
         res.status(500).json({ message: "Error fetching rides", error: error.message });
     }
 };
+
+
+export const getAllRides = async (req, res) => {
+    try {
+        let rides = await rideModel.find().sort({ startTime: 1 });
+
+        if (!rides || rides.length === 0) {
+            return res.status(404).json({ message: "No rides found." });
+        }
+
+        res.status(200).json({ rides }); // Send the rides as a JSON response
+    } catch (error) {
+        console.error("Error getting all rides:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};

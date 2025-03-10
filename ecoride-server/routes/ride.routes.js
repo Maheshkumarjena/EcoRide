@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import { createRide } from "../controllers/ride.contorller.js";
 import { findRide } from "../controllers/ride.contorller.js";
 import { processRides } from "../services/map.service.js";
+import { getAllRides } from "../controllers/ride.contorller.js";
 
 const router = express.Router();
 
@@ -32,6 +33,8 @@ router.post(
 );
 
 
-router.post('/processRides',processRides)
+
+router.get('/getAllRides',getAllRides)
+
 
 export default router;

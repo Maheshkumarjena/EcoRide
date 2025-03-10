@@ -29,13 +29,15 @@ const AuthComponent = ({ user, onSignIn, onSignUp, onSignOut }) => {
         </div>
       ) : (
         <div className="flex space-x-2">
+          <Link href='/SignIn'>
           <button
             onClick={onSignIn}
             className="sm:px-4 cursor-pointer sm:py-2 bg-purple-600 text-white rounded-md hover:bg-purple-500 hover:scale-105 transition-transform duration-200 flex items-center gap-2 text-sm dark:bg-purple-700 dark:text-white hover:brightness-110 px-2 py-[8px] text-xs"
-          >
+            >
             <FontAwesomeIcon icon={faUser} />
             Sign In
           </button>
+            </Link>
           <Link href='/SignUp'>
             <button
               onClick={onSignUp}
