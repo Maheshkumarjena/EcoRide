@@ -1,3 +1,9 @@
-export const Booking = ()=>{
-    
+const Booking = ()=>{
+    return(
+        <>
+
+        </>
+    )
 }
+
+export default Booking
