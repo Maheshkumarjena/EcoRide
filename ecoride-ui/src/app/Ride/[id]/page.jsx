@@ -7,7 +7,7 @@ import React from 'react';
 import { getAddressFromCoordinates } from '@/lib/utils';
 
 const RideDetailPage = ({ params }) => {
-const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY 
+  const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY
   const router = useRouter();
   const unwrappedParams = React.use(params); // Unwrap the `params` Promise
   const { id } = unwrappedParams; // Destructure `id` from the unwrapped `params`
@@ -18,6 +18,8 @@ const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY
   const [error, setError] = useState(null);
 
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
+
+  
 
   useEffect(() => {
     if (!id) return;
@@ -30,23 +32,23 @@ const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY
           withCredentials: true,
         });
         console.log(response.data.ride.startingPoint);
-      
+
         // Extract coordinates (assuming they are in the format [latitude, longitude])
         const startCoords = response.data.ride.startingPoint.coordinates;
         const destCoords = response.data.ride.destination.coordinates;
-        console.log('coordinates===================<', startCoords,destCoords)
-      
+        console.log('coordinates===================<', startCoords, destCoords)
+
         // Get addresses from coordinates
         const startAddress = await getAddressFromCoordinates(startCoords.lat, startCoords.lng, MAP_URL);
         const destinationAddress = await getAddressFromCoordinates(destCoords.lat, destCoords.lng, MAP_URL);
-      
+
         // Combine ride details with the new addresses
-        const rideDetail = {
+        const rideDetail = await {
           ...response.data.ride, // Spread the existing ride details
           startAddress, // Add the processed start address
           destinationAddress, // Add the processed destination address
         };
-      
+        console.log("ride details at ride details ", rideDetail)
         // Update state with the combined ride details
         setRide(rideDetail);
 
@@ -60,7 +62,10 @@ const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY
     fetchRide();
   }, [id]); // Add `id` as a dependency
 
-console.log("ride after adress extraction",ride)
+  console.log("ride after adress extraction", ride)
+  
+
+
 
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
@@ -78,60 +83,76 @@ console.log("ride after adress extraction",ride)
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-4">Ride Details</h1>
-      <div className="border p-4 rounded-md shadow-sm">
-        <p>
-          <strong>Starting Point:</strong> {ride.startAddress || renderLocation(ride.startingPoint)}
-        </p>
-        <p>
-          <strong>Destination:</strong> {ride.destinationAddress || renderLocation(ride.destination)}
-        </p>
-        <p>
-          <strong>Fare Per Seat:</strong> ${ride.farePerSeat}
-        </p>
-        <p>
-          <strong>Vehicle Type:</strong> {ride.vehicleType}
-        </p>
-        <p>
-          <strong>Total Seats Available:</strong> {ride.totalSeatsAvailable}
-        </p>
-        <p>
-          <strong>Start Time:</strong> {new Date(ride.startTime).toLocaleString()}
-        </p>
-        <p>
-          <strong>Duration:</strong> {ride.duration ? `${ride.duration} seconds` : 'N/A'}
-        </p>
-        <p>
-          <strong>Distance:</strong> {ride.distance ? `${ride.distance} meters` : 'N/A'}
-        </p>
-        <p>
-          <strong>Ride Status:</strong> {ride.rideStatus}
-        </p>
-        <p>
-          <strong>Stops:</strong> {ride.stops ? ride.stops.join(', ') : 'No stops'}
-        </p>
-        {/* Render riders if needed */}
-        {ride.riders && ride.riders.length > 0 && (
-          <div>
-            <strong>Riders:</strong>
-            <ul>
-              {ride.riders.map((rider, index) => (
-                <li key={index}>
-                  <p>User: {rider.user?.toString()}</p>
-                  <p>Seats Booked: {rider.seatsBooked}</p>
-                  <p>Payment Status: {rider.paymentStatus}</p>
-                  <p>Status: {rider.status}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+    <>
+      <div className="p-4">
+        <h1 className="text-2xl font-semibold mb-4 text-gray-800">Ride Details</h1>
+        <div className="border p-4 rounded-md shadow-sm bg-white hover:shadow-md transition-shadow duration-300">
+          <p className="mb-3">
+            <strong className="text-gray-700">Starting Point:</strong>{" "}
+            <span className="text-gray-600">{ride.startAddress || renderLocation(ride.startingPoint)}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Destination:</strong>{" "}
+            <span className="text-gray-600">{ride.destinationAddress || renderLocation(ride.destination)}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Fare Per Seat:</strong>{" "}
+            <span className="text-gray-600">${ride.farePerSeat}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Vehicle Type:</strong>{" "}
+            <span className="text-gray-600">{ride.vehicleType}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Total Seats Available:</strong>{" "}
+            <span className="text-gray-600">{ride.totalSeatsAvailable}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Start Time:</strong>{" "}
+            <span className="text-gray-600">{new Date(ride.startTime).toLocaleString()}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Duration:</strong>{" "}
+            <span className="text-gray-600">{ride.duration ? `${ride.duration} seconds` : 'N/A'}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Distance:</strong>{" "}
+            <span className="text-gray-600">{ride.distance ? `${ride.distance} meters` : 'N/A'}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Ride Status:</strong>{" "}
+            <span className="text-gray-600">{ride.rideStatus}</span>
+          </p>
+          <p className="mb-3">
+            <strong className="text-gray-700">Stops:</strong>{" "}
+            <span className="text-gray-600">{ride.stops ? ride.stops.join(', ') : 'No stops'}</span>
+          </p>
+          {/* Render riders if needed */}
+          {ride.riders && ride.riders.length > 0 && (
+            <div className="mt-4">
+              <strong className="text-gray-700">Riders:</strong>
+              <ul className="mt-2 space-y-2">
+                {ride.riders.map((rider, index) => (
+                  <li key={index} className="p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200">
+                    <p className="text-gray-600"><strong>User:</strong> {rider.user?.toString()}</p>
+                    <p className="text-gray-600"><strong>Seats Booked:</strong> {rider.seatsBooked}</p>
+                    <p className="text-gray-600"><strong>Payment Status:</strong> {rider.paymentStatus}</p>
+                    <p className="text-gray-600"><strong>Status:</strong> {rider.status}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+        <button
+          onClick={() => router.back()}
+          className="mt-4 bg-gray-300 text-gray-700 p-2 rounded-md hover:bg-gray-400 hover:text-gray-800 transition-colors duration-200"
+        >
+          Back
+        </button>
       </div>
-      <button onClick={() => router.back()} className="mt-4 bg-gray-300 text-gray-700 p-2 rounded-md">
-        Back
-      </button>
-    </div>
+    </>
+
   );
 };
 

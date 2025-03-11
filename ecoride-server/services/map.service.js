@@ -151,7 +151,7 @@ export const getDistanceTime = async (origin, destination) => {
 export const getAutoCompleteSuggestions = async (input) => {
   const apiKey = "YOUR_GRAPHHOPPER_API_KEY"; // Replace with your GraphHopper API Key
   const url = `https://graphhopper.com/api/1/geocode?q=${encodeURIComponent(input)}&limit=5&locale=en&key=${apiKey}`;
-
+  
   try {
     const response = await fetch(url);
     const data = await response.json();

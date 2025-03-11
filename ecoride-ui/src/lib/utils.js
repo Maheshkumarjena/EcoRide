@@ -48,6 +48,65 @@ export const getAddressFromCoordinates= async (latitude, longitude, apiKey)=> {
   }
 }
 
+
+export const getAutoCompleteSuggestions = async (input) => {
+  const apiKey = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY; // Replace with your GraphHopper API Key
+  const url = `https://graphhopper.com/api/1/geocode?q=${encodeURIComponent(input)}&limit=5&locale=en&key=${apiKey}`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("data of the",data.hits)
+    if (data.hits && data.hits.length > 0) {
+      const suggestions = data.hits.map((place) => ({
+        name: place.name,
+        address: place.street ? `${place.street}, ${place.state}, ${place.country}` : `${place.state ? place.state : place.city}, , ${place.country}`,
+        lat: place.point.lat,
+        lng: place.point.lng,
+      }));
+
+      console.log("Autocomplete Suggestions:", suggestions);
+      return suggestions;
+    } else {
+      console.log("No suggestions found.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching autocomplete suggestions:", error);
+    return [];
+  }
+};
+
+
+export const getAddressCoordinates = async (address) => {
+  const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Replace with your GraphHopper API Key
+  console.log('api key');
+  console.log(apiKey);
+  console.log("address at map . service =======>", address);
+  // const apiKey = "62e7db61-374d-4be8-b22d-43407c2cd56f"
+  const url = `https://graphhopper.com/api/1/geocode?q=${encodeURIComponent(address)}&limit=1&key=${apiKey}`;
+
+  try {
+      const response = await axios.get(url);
+      const data = await response.data;
+      console.log("longititude and latitude", data.hits[0]?.point); // Use optional chaining
+      if (data.hits && data.hits.length > 0 && data.hits[0].point) { // Check point existence
+          console.log("data.hits=======>", data.hits[0].point);
+          const { lat, lng } = data.hits[0].point;
+          console.log(`Coordinates for "${address}":`, lat, lng);
+          return { lat, lng };
+      } else {
+          console.error("No coordinates found for the given address.");
+          return null;
+      }
+  } catch (error) {
+      console.error("Error fetching coordinates:", error);
+      return null;
+  }
+};
+
+
+
 // Example usage within a React component (or any frontend environment):
 // async function exampleUsage(latitude, longitude) {
 //   const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Make sure you have this in your .env.local file for Next.js, or similar for other frameworks.
