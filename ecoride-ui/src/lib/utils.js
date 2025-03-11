@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
 import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config()
 
 export function cn(...inputs) {
@@ -78,8 +79,9 @@ export const getAutoCompleteSuggestions = async (input) => {
 };
 
 
-export const getAddressCoordinates = async (address) => {
-  const apiKey = process.env.NEXT_PUBLIC_GRAPHHOPPER_API_KEY; // Replace with your GraphHopper API Key
+export const getAddressCoordinates = async (address,apiKey) => {
+  console.log("getAddressCoordinates triggered")
+  ; // Replace with your GraphHopper API Key
   console.log('api key');
   console.log(apiKey);
   console.log("address at map . service =======>", address);
