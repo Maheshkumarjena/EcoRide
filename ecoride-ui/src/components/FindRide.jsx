@@ -233,21 +233,7 @@ const FindRide = () => {
                 <button type="submit" className="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">Find Ride</button>
             </form>
             <RideList rides={ridesWithAddresses} />
-            {ridesWithAddresses.length > 0 && (
-                <div className="mt-4">
-                    <h3 className="text-lg font-semibold mb-2">Found Rides:</h3>
-                    <ul>
-                        {ridesWithAddresses.map((ride) => (
-                            <li key={ride._id} className="border p-2 mb-2 rounded">
-                                <p>From: {ride.startAddress}</p>
-                                <p>To: {ride.destinationAddress}</p>
-                                <p>Price: {ride.farePerSeat}</p>
-                                {/* Display other relevant ride details */}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+          
             {ridesWithAddresses.length === 0 && foundRides.length !== undefined && (<div className="mt-4">No rides found.</div>)}
         </div>
     );

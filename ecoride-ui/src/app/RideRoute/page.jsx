@@ -5,7 +5,7 @@ import React from 'react';
 
 const RideMap = dynamic(() => import("@/components/Ride-map"), { ssr: false });
 
-const RideRoute = () => {
+const RideRoute = ({start , end , stops , via}) => {
   // const start = { lat: 20.342265, lng: 85.819937 };
   // const end = { lat: 20.234124, lng: 85.814959 };
   // const stops = [

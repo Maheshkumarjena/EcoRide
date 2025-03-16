@@ -6,6 +6,7 @@ import axios from 'axios';
 import React from 'react';
 import { getAddressFromCoordinates } from '@/lib/utils';
 import { getAddressCoordinates } from '@/lib/utils';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 
@@ -211,6 +212,13 @@ const RideDetailPage = ({ params }) => {
         >
           Back
         </button>
+        <Link href={`/Booking/${ride._id}`}>
+        <button
+          className="mt-4 bg-gray-300 text-gray-700 p-2 rounded-md hover:bg-gray-400 hover:text-gray-800 transition-colors duration-200"
+          >
+          Book Ride
+        </button>
+          </Link>
       </div>
   
       {/* Ride Map Section */}
