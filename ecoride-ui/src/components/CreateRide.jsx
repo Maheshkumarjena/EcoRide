@@ -1,9 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import _ from "lodash";
+import { getAutoCompleteSuggestions } from "@/lib/utils";
 
 const CreateRide = () => {
+    const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [departure, setDeparture] = useState("");
@@ -14,57 +17,41 @@ const CreateRide = () => {
     const [seats, setSeats] = useState("");
     const [price, setPrice] = useState("");
     const [stops, setStops] = useState("");
-    const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
-    const [vehicleType, setVehicleType] = useState(""); // Add vehicleType state
+    const [vehicleType, setVehicleType] = useState("");
+    const [error, setError] = useState(null);
+    const [departureSuggestions, setDepartureSuggestions] = useState([]);
+    const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+    const [showDepartureSuggestions, setShowDepartureSuggestions] = useState(false);
+    const [showDestinationSuggestions, setShowDestinationSuggestions] = useState(false);
 
-    
-    const handleSubmit = async (e) => {
-        console.log("user at crateRide======>",user._id)
-        e.preventDefault();
-        setError(null);
-        setSuccessMessage(null);
-        const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
-        // console.log("server url:", API_URL);
+    const handleDepartureSearch = useCallback(
+        _.debounce(async (searchValue) => {
+            if (searchValue.trim()) {
+                const suggestions = await getAutoCompleteSuggestions(searchValue);
+                setDepartureSuggestions(suggestions);
+                setShowDepartureSuggestions(true);
+            } else {
+                setDepartureSuggestions([]);
+                setShowDepartureSuggestions(false);
+            }
+        }, 300),
+        []
+    );
 
-        try {
-            const startTime = `${date}T${time}:00Z`;
-            const stopsArray = stops.split(",").map(stop => stop.trim());
-            const expectedArrivalTimeISO = `${date}T${expectedArrivalTime}:00Z`;
-
-            const rideData = {
-                vehicleType:vehicleType,
-                startingPoint: departure,
-                destination: destination,
-                startTime: startTime,
-                expectedArrivalTime: expectedArrivalTimeISO,
-                totalSeatsAvailable: parseInt(seats),
-                farePerSeat: parseFloat(price),
-                stops: stopsArray,
-                vehicleType: vehicleType, // Add vehicleType to rideData
-                user: user._id, // Add provider (user ID) to rideData
-            };
-            console.log("rideData at createRide=========>",rideData)
-
-            const response = await axios.post(`${API_URL}/rides/createRide`, rideData, {
-                withCredentials: true,
-            });
-            console.log("Ride created:", response.data);
-            setSuccessMessage("Ride created successfully!");
-            setDeparture("");
-            setDestination("");
-            setDate("");
-            setTime("");
-            setExpectedArrivalTime("");
-            setSeats("");
-            setPrice("");
-            setStops("");
-            setVehicleType(""); // Reset vehicleType
-        } catch (err) {
-            console.error("Failed to create ride:", err.response?.data?.errors || err);
-            setError(err.response?.data?.message || "Failed to create ride. Please try again.");
-        }
-    };
+    const handleDestinationSearch = useCallback(
+        _.debounce(async (searchValue) => {
+            if (searchValue.trim()) {
+                const suggestions = await getAutoCompleteSuggestions(searchValue);
+                setDestinationSuggestions(suggestions);
+                setShowDestinationSuggestions(true);
+            } else {
+                setDestinationSuggestions([]);
+                setShowDestinationSuggestions(false);
+            }
+        }, 300),
+        []
+    );
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -84,8 +71,62 @@ const CreateRide = () => {
         }
     }, [router]);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setSuccessMessage(null);
+
+        try {
+            const startTime = `${date}T${time}:00Z`; // Correct ISO 8601 format
+            const stopsArray = stops.split(",").map(stop => stop.trim());
+            const expectedArrivalTimeISO = `${date}T${expectedArrivalTime}:00Z`;
+            
+            const rideData = {
+                vehicleType: vehicleType,
+                startingPoint: departure,
+                destination: destination,
+                startTime: startTime,
+                expectedArrivalTime: expectedArrivalTimeISO,
+                totalSeatsAvailable: parseInt(seats),
+                farePerSeat: parseFloat(price),
+                stops: stopsArray,
+                user: user._id,
+            };
+
+            const response = await axios.post(`${API_URL}/rides/createRide`, rideData, {
+                withCredentials: true,
+            });
+            console.log("Ride created:", response.data);
+            setSuccessMessage("Ride created successfully!");
+            setDeparture("");
+            setDestination("");
+            setDate("");
+            setTime("");
+            setExpectedArrivalTime("");
+            setSeats("");
+            setPrice("");
+            setStops("");
+            setVehicleType("");
+        } catch (err) {
+            console.error("Failed to create ride:", err.response?.data?.errors || err);
+            setError(err.response?.data?.message || "Failed to create ride. Please try again.");
+        }
+    };
+
+    useEffect(() => {
+        if (departure) {
+            setShowDepartureSuggestions(false);
+        }
+    }, [departure]);
+
+    useEffect(() => {
+        if (destination) {
+            setShowDestinationSuggestions(false);
+        }
+    }, [destination]);
+
     if (!user) {
-        return null; // or a loading indicator
+        return null;
     }
 
     return (
@@ -95,14 +136,67 @@ const CreateRide = () => {
             {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
 
             <form onSubmit={handleSubmit}>
-                <div className="mb-4">
+                <div className="mb-4 relative">
                     <label htmlFor="departure" className="block text-sm font-medium text-gray-700">Departure</label>
-                    <input type="text" id="departure" value={departure} onChange={(e) => setDeparture(e.target.value)} placeholder="Enter departure location" className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none" />
+                    <input
+                        type="text"
+                        id="departure"
+                        value={departure}
+                        onChange={(e) => {
+                            setDeparture(e.target.value);
+                            handleDepartureSearch(e.target.value);
+                        }}
+                        onBlur={() => setTimeout(() => setShowDepartureSuggestions(false), 200)}
+                        placeholder="Enter departure location"
+                        className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none"
+                    />
+                    {showDepartureSuggestions && departureSuggestions.length > 0 && (
+                        <ul className="absolute mt-2 bg-white rounded-md dark:bg-purple-800 border border-gray-300 text-black rounded-md shadow-lg w-full z-10">
+                            {departureSuggestions.map((suggestion, index) => (
+                                <li
+                                    key={index}
+                                    className="p-2 hover:bg-purple-500 rounded-md cursor-pointer"
+                                    onClick={() => {
+                                        setDeparture(`${suggestion.name}, ${suggestion.address}`);
+                                    }}
+                                >
+                                    {`${suggestion.name}, ${suggestion.address}`}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
-                <div className="mb-4">
+
+                <div className="mb-4 relative">
                     <label htmlFor="destination" className="block text-sm font-medium text-gray-700">Destination</label>
-                    <input type="text" id="destination" value={destination} onChange={(e) => setDestination(e.target.value)} placeholder="Enter destination location" className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none" />
+                    <input
+                        type="text"
+                        id="destination"
+                        value={destination}
+                        onChange={(e) => {
+                            setDestination(e.target.value);
+                            handleDestinationSearch(e.target.value);
+                        }}
+                        onBlur={() => setTimeout(() => setShowDestinationSuggestions(false), 200)}
+                        placeholder="Enter destination location"
+                        className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none"
+                    />
+                    {showDestinationSuggestions && destinationSuggestions.length > 0 && (
+                        <ul className="absolute mt-2 bg-white border border-gray-300 rounded-md dark:bg-purple-800 border border-gray-300 text-black rounded-md shadow-lg w-full z-10">
+                            {destinationSuggestions.map((suggestion, index) => (
+                                <li
+                                    key={index}
+                                    className="p-2 hover:bg-purple-500 cursor-pointer"
+                                    onClick={() => {
+                                        setDestination(`${suggestion.name}, ${suggestion.address}`);
+                                    }}
+                                >
+                                    {`${suggestion.name}, ${suggestion.address}`}                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
+
                 <div className="mb-4">
                     <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
                     <input type="date" id="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none" />

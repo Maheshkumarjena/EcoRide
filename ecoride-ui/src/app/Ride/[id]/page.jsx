@@ -87,7 +87,7 @@ const RideDetailPage = ({ params }) => {
           lng: ride.destination.coordinates.lng,
         };
     
-        // Fetch coordinates for all stops (if stops exist)
+        // Fetch coordinates for all stops  (if stops exist)
         const stops = ride.stops
           ? await Promise.all(
               ride.stops.map((stop) => getAddressCoordinates(stop, MAP_URL))
@@ -214,7 +214,7 @@ const RideDetailPage = ({ params }) => {
       </div>
   
       {/* Ride Map Section */}
-      <div className="mt-6 lg:mt-0 lg:flex-1"> {/* Flex item for larger screens */}
+      <div className="mt-6 lg:mt-0 lg:flex-1"> 
         <RideMap start={start} end={end} stops={stops} via={via} />
       </div>
     </div>

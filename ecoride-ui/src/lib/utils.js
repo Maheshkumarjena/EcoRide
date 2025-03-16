@@ -61,7 +61,7 @@ export const getAutoCompleteSuggestions = async (input) => {
     if (data.hits && data.hits.length > 0) {
       const suggestions = data.hits.map((place) => ({
         name: place.name,
-        address: place.street ? `${place.street}, ${place.state}, ${place.country}` : `${place.state ? place.state : place.city}, , ${place.country}`,
+        address: place.street ? `${place.street}, ${place.state}, ${place.country}` : `${place.state ? place.state : place.city},  ${place.country}`,
         lat: place.point.lat,
         lng: place.point.lng,
       }));
