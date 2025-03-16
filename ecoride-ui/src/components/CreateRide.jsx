@@ -25,7 +25,7 @@ const CreateRide = () => {
         setError(null);
         setSuccessMessage(null);
         const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
-        console.log("server url:", API_URL);
+        // console.log("server url:", API_URL);
 
         try {
             const startTime = `${date}T${time}:00Z`;

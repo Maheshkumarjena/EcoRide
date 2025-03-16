@@ -7,7 +7,7 @@ import Search from "@/components/Search";
 
 export default function Home() {
   const API_URL = process.env.SERVER_URL || "https://ecoride-m6zs.onrender.com";
-  console.log("server url", API_URL)
+  // console.log("server url", API_URL)
   return (
     <>
       {/* <Search/> */}

@@ -9,6 +9,8 @@ const Navbar = () => {
     <>
       <div className="fixed bottom-0 h-[10vh] z-50 w-full -translate-x-1/2 left-1/2 bg-opacity-30 bg-clip-padding backdrop-filter backdrop-blur-sm border-t border-purple-300 dark:border-purple-700">
         <div className="grid h-full max-w-lg grid-cols-4 mx-auto">
+
+
           <Link
             href="/"
             className="inline-flex flex-col items-center justify-center p-4 hover:bg-purple-300 dark:hover:bg-purple-800 group cursor-pointer"
@@ -18,6 +20,7 @@ const Navbar = () => {
               Home
             </span>
           </Link>
+
           <div
             id="tooltip-home"
             role="tooltip"
@@ -26,6 +29,7 @@ const Navbar = () => {
             Home
             <div className="tooltip-arrow" data-popper-arrow></div>
           </div>
+
           <Link
             href="/Ride"
             className="inline-flex flex-col items-center justify-center p-4 hover:bg-purple-300 dark:hover:bg-purple-800 group cursor-pointer"
@@ -35,6 +39,7 @@ const Navbar = () => {
               Ride
             </span>
           </Link>
+
           <div
             id="tooltip-ride"
             role="tooltip"
@@ -43,6 +48,7 @@ const Navbar = () => {
             Ride
             <div className="tooltip-arrow" data-popper-arrow></div>
           </div>
+
           <Link
             href="/Search"
             className="inline-flex flex-col items-center justify-center p-4 hover:bg-purple-300 dark:hover:bg-purple-800 group cursor-pointer"
@@ -52,6 +58,7 @@ const Navbar = () => {
               Search
             </span>
           </Link>
+
           <div
             id="tooltip-search"
             role="tooltip"
@@ -62,14 +69,16 @@ const Navbar = () => {
           </div>
 
 
-          <SidebarTrigger >
+          <SidebarTrigger className="h-full flex-col justify-center items-center hover:bg-purple-300 dark:hover:bg-purple-800 group cursor-pointer rounded-[0px]" >
 
-            <div className="inline-flex flex-col items-center justify-center p-4 hover:bg-purple-300 dark:hover:bg-purple-800 group cursor-pointer mb-[-33px]">
+            <div className="flex  flex-col justify-center items-center">
+
               <FaBars className="w-5 h-5 mb-1 text-purple-600 dark:text-purple-300 group-hover:text-purple-800 dark:group-hover:text-purple-200 group-hover:transform group-hover:scale-110 transition-all duration-200 ease-in-out" />
               <span className="text-xs text-purple-800 dark:text-purple-200 group-hover:transform group-hover:scale-110 transition-all duration-200 ease-in-out">
                 Menu
               </span>
             </div>
+
             <div
               id="tooltip-settings"
               role="tooltip"
