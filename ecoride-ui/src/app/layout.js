@@ -11,7 +11,7 @@ import Navbar from "@/components/Navbar";
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={` antialiased `}>
+      <body className={` antialiased  `} >
         <ReduxProvider>
           <ThemeProvider
             attribute="class"
@@ -21,8 +21,8 @@ export default function RootLayout({ children }) {
           >
             <SidebarProvider>
               <AppSidebar />
-              <BackgroundBeamsWithCollision className="h-screen ">
-                <div className="h-screen flex flex-col w-screen ">
+              <BackgroundBeamsWithCollision className="h-screen     ">
+                <div className="h-screen flex flex-col w-screen hide-scrollbar ">
                   {children}
                 </div>
                 <Navbar />

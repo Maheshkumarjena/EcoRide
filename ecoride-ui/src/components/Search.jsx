@@ -8,7 +8,7 @@ const Search = ({ rides, onSearch, query, setQuery, loading, error, suggestions 
   console.log("rides at search component", rides);
 
   return (
-    <div className="p-4 w-full h-full overflow-scroll absolute top-0 z-40 rounded-md shadow-input">
+    <div className="p-4 w-full h-full hide-scrollbar overflow-scroll absolute top-0 z-40 rounded-md shadow-input">
       <input
         type="text"
         placeholder="Search..."
