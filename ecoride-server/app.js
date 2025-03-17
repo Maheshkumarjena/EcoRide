@@ -7,6 +7,7 @@ import userRoutes from './routes/user.routes.js';
 import rideRoutes from './routes/ride.routes.js';
 // import rideRoutes from './routes/ride.routes.js';
 import mapRoutes from './routes/map.routes.js';
+import bookingRoutes from './routes/booking.routes.js';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 app.use('/users', userRoutes);
 app.use('/rides', rideRoutes);
 app.use('/maps', mapRoutes);
+app.use('/bookings', bookingRoutes);
 
 
 

@@ -5,6 +5,7 @@ import { findRide } from "../controllers/ride.contorller.js";
 import { processRides } from "../services/map.service.js";
 import { getAllRides } from "../controllers/ride.contorller.js";
 
+
 const router = express.Router();
 
 router.post(
@@ -37,6 +38,7 @@ router.post(
 router.get('/getAllRides',getAllRides)
 
 router.get('/:id', getRideById);
+
 
 
 

@@ -9,36 +9,31 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'; // For Next.js App Router
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import Loader from "./ui/Loader";
-import { set } from "lodash";
 
 export default function SigninForm() {
-
   const router = useRouter();
 
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
   console.log("server url:", API_URL);
-
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [message, setMessages] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
-
-
   const SignInUser = async () => {
     setLoading(true);
-    console.log('EMAIL PASSWORD:', email, password)
+    console.log('EMAIL PASSWORD:', email, password);
     if (!email || !password) {
-      alert('All fields are required!')
+      alert('All fields are required!');
+      setLoading(false);
       return;
     }
     try {
-
       const response = await axios.post(`${API_URL}/users/login`, {
         email,
         password,
@@ -56,12 +51,10 @@ export default function SigninForm() {
       localStorage.setItem('user', JSON.stringify(userDataWithExpiration));
 
       setTimeout(() => {
-        router.push('/')
+        router.push('/');
         setMessages("");
       }, 2000);
-
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error logging in user:", error.response?.data || error.message);
       setLoading(false);
       setMessages(`Error: ${error.response?.data.message || error.message}`);
@@ -69,19 +62,21 @@ export default function SigninForm() {
         setMessages("");
       }, 2000);
     }
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     SignInUser();
     console.log("Form submitted");
   };
+
   return (
     <motion.div
-      initial={{ opacity: 0 }} // Initial state
-      animate={{ opacity: 1 }} // Final state
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 1, ease: "easeInOut" }}
-      className="w-md w-full my-[10vh] mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
+      className="w-md w-full my-[10vh] mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900"
+    >
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">
         Welcome to EcoRide
       </h2>
@@ -89,7 +84,6 @@ export default function SigninForm() {
         Join the Ride, Change the Future!
       </p>
       <form className="my-8 z-0" onSubmit={handleSubmit}>
-
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input id="email" placeholder="projectmayhem@fc.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -101,29 +95,33 @@ export default function SigninForm() {
 
         <button
           className="bg-gradient-to-br cursor-pointer relative group/btn from-purple-600 dark:from-purple-700 dark:to-purple-700 to-purple-400 block w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-          type="submit">
+          type="submit"
+        >
           Sign in &rarr;
           <BottomGradient />
         </button>
 
         <div
-          className="bg-gradient-to-r from-transparent via-purple-300 dark:via-purple-700 to-transparent my-8 h-[1px] w-full" />
+          className="bg-gradient-to-r from-transparent via-purple-300 dark:via-purple-700 to-transparent my-8 h-[1px] w-full"
+        />
 
         <div className="flex flex-col space-y-4">
           <button
             className="relative cursor-pointer group/btn flex space-x-2 items-center justify-start px-4 w-full text-purple-900 dark:text-purple-300 rounded-md h-10 font-medium shadow-input bg-purple-50 dark:bg-purple-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit">
+            type="submit"
+          >
             <IconBrandGoogle className="h-4 w-4 text-purple-800 dark:text-purple-300" />
             <span className="text-purple-700 dark:text-purple-300 text-sm">
               Google
             </span>
             <BottomGradient />
           </button>
-          <p className='mb-[1px] text-sm  '>      Don't have an account ? </p>
+          <p className='mb-[1px] text-sm  '>   Don't have an account ? </p>
           <Link href='SignUp'>
             <button
               className="relative cursor-pointer group/btn flex items-center justify-center px-4 w-full text-purple-900 dark:text-purple-300 rounded-md h-10 font-medium shadow-input bg-purple-50 dark:bg-purple-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-              type="button">
+              type="button"
+            >
               Sign up
               <BottomGradient />
             </button>

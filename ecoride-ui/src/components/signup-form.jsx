@@ -8,22 +8,20 @@ import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'; // For Next.js App Router
 import { motion } from "framer-motion";
-import { set } from "lodash";
 import Loader from "./ui/Loader";
-
 
 export default function SignupForm() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading , setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
 
   // Backend URL should be placed in an environment variable
-  const API_URL = process.env.NEXT_PUBLIC_SERVER_URL  || "https://ecoride-m6zs.onrender.com";
+  const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
   console.log("server url:", API_URL);
 
   const registerUser = async () => {
@@ -31,26 +29,25 @@ export default function SignupForm() {
 
     if (!firstname || !lastname || !email || !password) {
       alert("All fields are required!");
+      setLoading(false);
       return;
     }
 
     try {
       const response = await axios.post(`${API_URL}/users/register`, {
         firstname,
-        lastname, // Ensure it's a string
+        lastname,
         email,
         password,
-      }
-    );
+      });
       console.log("User registered successfully:", response.data);
       setLoading(false);
       setMessage("User registered successfully. Redirecting to sign in page...");
       setTimeout(() => {
-        router.push('/SignIn')
+        router.push('/SignIn');
         setMessage("");
-      }, 2000)
-    } 
-    catch (error) {
+      }, 2000);
+    } catch (error) {
       console.error("Error registering user:", error.response?.data || error.message);
       setLoading(false);
       setMessage(`Error: ${error.response?.data.message || error.message}`);
@@ -66,14 +63,15 @@ export default function SignupForm() {
   };
 
   return (
-    
-    <motion.div initial={{ opacity: 0 }} // Initial state
-    animate={{ opacity: 1 }} // Final state
-    transition={{ duration: 1, ease: "easeInOut" }}
-    className="my-[10vh] w-md w-full mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1, ease: "easeInOut" }}
+      className="my-[10vh] w-md w-full mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900"
+    >
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">Welcome to EcoRide</h2>
       <p className="text-purple-600 text-sm max-w-sm mt-2 dark:text-purple-300">Join the Ride, Change the Future!</p>
-      
+
       <form className="my-8 z-0" onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
@@ -143,7 +141,7 @@ export default function SignupForm() {
             <span className="text-purple-700 dark:text-purple-300 text-sm">Google</span>
             <BottomGradient />
           </button>
-          
+
           <p className="text-sm">Already have an account?</p>
           <Link href="/SignIn">
             <button

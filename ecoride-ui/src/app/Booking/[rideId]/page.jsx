@@ -8,8 +8,9 @@ const BookingPage = ({ params }) => {
     const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
     const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY;
     const router = useRouter();
-    const unwrappedParams = React.use(params); 
-    const { id } = unwrappedParams;
+    const unwrappedParams = React.use(params); // Unwrap the `params` Promise
+    
+    const { rideId } = unwrappedParams; // Correct destructuring
     const [user, setUser] = useState(null);
     const [ride, setRide] = useState(null);
     const [seatsToBook, setSeatsToBook] = useState(1);
@@ -17,27 +18,27 @@ const BookingPage = ({ params }) => {
     const [successMessage, setSuccessMessage] = useState(null);
     const [rideWithAddresses, setRideWithAddresses] = useState(null);
 
-    console.log("ride id at Booking page===========================>", id);
-
-    // useEffect(() => {
-    //     const storedUser = localStorage.getItem('user');
-    //     if (storedUser) {
-    //         const userData = JSON.parse(storedUser);
-    //         const currentTime = Date.now();
-    //         if (userData.expiration && currentTime < userData.expiration) {
-    //             setUser(userData);
-    //         } else {
-    //             localStorage.removeItem('user');
-    //             router.push('/SignIn');
-    //         }
-    //     } else {
-    //         router.push('/SignIn');
-    //     }
-    // }, [router]);
+    console.log("ride id at Booking page===========================>", rideId); // Use rideId
 
     useEffect(() => {
-        if (id) {
-            axios.get(`${API_URL}/rides/${id}`, { withCredentials: true })
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const userData = JSON.parse(storedUser);
+            const currentTime = Date.now();
+            if (userData.expiration && currentTime < userData.expiration) {
+                setUser(userData);
+            } else {
+                localStorage.removeItem('user');
+                router.push('/SignIn');
+            }
+        } else {
+            router.push('/SignIn');
+        }
+    }, [router]);
+
+    useEffect(() => {
+        if (rideId) {
+            axios.get(`${API_URL}/rides/${rideId}`, { withCredentials: true })
                 .then(response => {
                     console.log("response at booking------------------->", response);
                     setRide(response.data.ride);
@@ -47,7 +48,7 @@ const BookingPage = ({ params }) => {
                     setError("Failed to fetch ride details.");
                 });
         }
-    }, [id, API_URL]);
+    }, [rideId, API_URL]);
 
     useEffect(() => {
         async function fetchAddress() {
@@ -86,18 +87,17 @@ const BookingPage = ({ params }) => {
         setError(null);
         setSuccessMessage(null);
         try {
-            if (!ride) {
+            if (!rideWithAddresses) {
                 setError("Ride details not found.");
                 return;
             }
-            if (seatsToBook > ride.totalSeatsAvailable) {
+            if (seatsToBook > rideWithAddresses.totalSeatsAvailable) {
                 setError("Not enough seats available.");
                 return;
             }
 
-            await axios.post(`${API_URL}/bookings/createBooking`, {
-                id: ride._id,
-                userId: user._id,
+            await axios.post(`${API_URL}/bookings/createBooking/${rideWithAddresses._id}`, {
+                userId: user._id, // Use the authenticated user's ID
                 seats: seatsToBook,
             }, { withCredentials: true });
 
@@ -116,36 +116,55 @@ const BookingPage = ({ params }) => {
     console.log("rides and rides and", rideWithAddresses);
     return (
         <div className="p-4 pb-20">
-            <h2 className="text-2xl font-semibold mb-4">Book Ride</h2>
-            {error && <div className="text-red-500 mb-4">{error}</div>}
-            {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
+  <h2 className="text-2xl font-semibold mb-4">Book Ride</h2>
+  {error && <div className="text-red-500 mb-4">{error}</div>}
+  {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
 
-            {rideWithAddresses && (
-                <div className="mb-4">
-                    <p><strong>From:</strong> {rideWithAddresses.startAddress}</p>
-                    <p><strong>To:</strong> {rideWithAddresses.destinationAddress}</p>
-                    <p><strong>Date:</strong> {new Date(rideWithAddresses.startTime).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {new Date(rideWithAddresses.startTime).toLocaleTimeString()}</p>
-                    <p><strong>Price per seat:</strong> ${rideWithAddresses.farePerSeat}</p>
-                    <p><strong>Seats Available:</strong> {rideWithAddresses.totalSeatsAvailable}</p>
-                </div>
-            )}
+  {rideWithAddresses && (
+    <div className="mb-4">
+      <p>
+        <strong>From:</strong> {rideWithAddresses.startAddress}
+      </p>
+      <p>
+        <strong>To:</strong> {rideWithAddresses.destinationAddress}
+      </p>
+      <p>
+        <strong>Date:</strong> {new Date(rideWithAddresses.startTime).toLocaleDateString()}
+      </p>
+      <p>
+        <strong>Time:</strong> {new Date(rideWithAddresses.startTime).toLocaleTimeString()}
+      </p>
+      <p>
+        <strong>Price per seat:</strong> ${rideWithAddresses.farePerSeat}
+      </p>
+      <p>
+        <strong>Seats Available:</strong> {rideWithAddresses.totalSeatsAvailable}
+      </p>
+    </div>
+  )}
 
-            <div className="mb-4">
-                <label htmlFor="seats" className="block text-sm font-medium text-gray-700">Number of Seats</label>
-                <input
-                    type="number"
-                    id="seats"
-                    value={seatsToBook}
-                    onChange={(e) => setSeatsToBook(parseInt(e.target.value))}
-                    min="1"
-                    max={ride.totalSeatsAvailable}
-                    className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none"
-                />
-            </div>
+  <div className="mb-4">
+    <label htmlFor="seats" className="block text-sm font-medium text-gray-700">
+      Number of Seats
+    </label>
+    <input
+      type="number"
+      id="seats"
+      value={seatsToBook}
+      onChange={(e) => setSeatsToBook(parseInt(e.target.value))}
+      min="1"
+      max={ride.totalSeatsAvailable}
+      className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-purple-300 focus:outline-none"
+    />
+  </div>
 
-            <button onClick={handleBook} className="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">Book Ride</button>
-        </div>
+  <button
+    onClick={handleBook}
+    className="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700"
+  >
+    Book Ride
+  </button>
+</div>
     );
 };
 
