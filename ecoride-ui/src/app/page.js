@@ -14,6 +14,7 @@ export default function Home() {
 
       {/* <Search/> */}
       {/* <Typewriter/> */}
+      
       <CarpoolLandingPage/>
       <ThemeAuth/>
     </div>

@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 const CarpoolLandingPage = () => {
   return (
     <div className="font-sans">
       {/* Hero Section */}
+          
       <section
         className="bg-cover bg-center h-screen flex items-center justify-center text-gray-800 dark:text-gray-200"
         style={{ backgroundImage: "url('car-pool.jpg')" }}

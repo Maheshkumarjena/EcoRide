@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation'; // For Next.js App Router
 import { motion } from "framer-motion";
 import Loader from "./ui/Loader";
+import { toast } from "sonner";
 
 export default function SignupForm() {
   const [firstname, setFirstname] = useState("");
@@ -42,7 +43,7 @@ export default function SignupForm() {
       });
       console.log("User registered successfully:", response.data);
       setLoading(false);
-      setMessage("User registered successfully. Redirecting to sign in page...");
+      toast.success("User registered successfully. Redirecting to sign in page...");
       setTimeout(() => {
         router.push('/SignIn');
         setMessage("");
@@ -50,7 +51,7 @@ export default function SignupForm() {
     } catch (error) {
       console.error("Error registering user:", error.response?.data || error.message);
       setLoading(false);
-      setMessage(`Error: ${error.response?.data.message || error.message}`);
+      toast.error(`Error: ${error.response?.data.message || error.message}`);
       setTimeout(() => {
         setMessage("");
       }, 2000);

@@ -7,6 +7,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import ReduxProvider from "./ReduxProvider";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/sonner"
+
 
 export default function RootLayout({ children }) {
   return (
@@ -24,6 +26,7 @@ export default function RootLayout({ children }) {
               <BackgroundBeamsWithCollision className="h-screen     ">
                 <div className="h-screen flex flex-col w-screen hide-scrollbar ">
                   {children}
+                  <Toaster/>
                 </div>
                 <Navbar />
 

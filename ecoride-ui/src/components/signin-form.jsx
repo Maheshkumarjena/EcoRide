@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Loader from "./ui/Loader";
+import { toast } from "sonner";
 
 export default function SigninForm() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function SigninForm() {
       });
       console.log("User logged in successfully:", response.data);
       setLoading(false);
-      setMessages("User logged in successfully. Redirecting to home...");
+      toast.success("User logged in successfully.");
 
       // Store user details in local storage for 1 hour
       const userData = response.data.user; // Assuming response.data.user contains user details
@@ -51,13 +52,13 @@ export default function SigninForm() {
       localStorage.setItem('user', JSON.stringify(userDataWithExpiration));
 
       setTimeout(() => {
-        router.push('/');
+        router.back();
         setMessages("");
       }, 2000);
     } catch (error) {
       console.error("Error logging in user:", error.response?.data || error.message);
       setLoading(false);
-      setMessages(`Error: ${error.response?.data.message || error.message}`);
+      toast.error(`Error: ${error.response?.data.message || error.message}`);
       setTimeout(() => {
         setMessages("");
       }, 2000);

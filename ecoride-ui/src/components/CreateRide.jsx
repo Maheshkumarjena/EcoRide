@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import _ from "lodash";
 import { getAutoCompleteSuggestions } from "@/lib/utils";
+import { toast } from "sonner";
 
 const CreateRide = () => {
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
@@ -74,13 +75,12 @@ const CreateRide = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setSuccessMessage(null);
 
+    
     try {
-      const startTime = `<span class="math-inline">\{date\}T</span>{time}:00Z`;
-      const stopsArray = stops.split(",").map(stop => stop.trim());
-      const expectedArrivalTimeISO = `<span class="math-inline">\{date\}T</span>{expectedArrivalTime}:00Z`;
-
+    const startTime = `${date}T${time}:00Z`;
+    const stopsArray = stops.split(",").map(stop => stop.trim());
+    const expectedArrivalTimeISO = `${date}T${expectedArrivalTime}:00Z`;
       const rideData = {
         vehicleType: vehicleType,
         startingPoint: departure,
@@ -97,7 +97,8 @@ const CreateRide = () => {
         withCredentials: true,
       });
       console.log("Ride created:", response.data);
-      setSuccessMessage("Ride created successfully!");
+      toast.success("Ride created successfully!");
+
       setDeparture("");
       setDestination("");
       setDate("");
@@ -130,7 +131,7 @@ const CreateRide = () => {
   }
 
   return (
-    <div className="p-4 pb-20 bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+    <div className="p-4 pb-20  bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
       <h2 className="text-2xl font-semibold mb-4 text-purple-900 dark:text-purple-100">Create a Ride</h2>
       {error && <div className="text-red-500 mb-4">{error}</div>}
       {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
