@@ -8,25 +8,28 @@ import { getAddressFromCoordinates } from '@/lib/utils';
 import { getAddressCoordinates } from '@/lib/utils';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { Button } from "@/components/ui/button" // Using shadcn/ui Button
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Using shadcn/ui Card
+import { Badge } from "@/components/ui/badge" // Using shadcn/ui Badge
+import { Skeleton } from "@/components/ui/skeleton" // Using shadcn/ui Skeleton
 
 
 const RideMap = dynamic(() => import("@/components/Ride-map"), { ssr: false });
 
 const RideDetailPage = ({ params }) => {
-  
+
   const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY
   const router = useRouter();
-  const unwrappedParams = React.use(params); // Unwrap the `params` Promise
-  const { id } = unwrappedParams; // Destructure `id` from the unwrapped `params`
-  console.log("id at the query===========================>", id);
+  const unwrappedParams = React.use(params);
+  const { id } = unwrappedParams;
 
   const [ride, setRide] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [start,setStart]= useState(null);
-  const [end,setEnd]=useState(null);
-  const [stops,setStops]=useState(null);
-  const [via,setVia]=useState(null);
+  const [start, setStart] = useState(null);
+  const [end, setEnd] = useState(null);
+  const [stops, setStops] = useState(null);
+  const [via, setVia] = useState(null);
 
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
 
@@ -34,48 +37,45 @@ const RideDetailPage = ({ params }) => {
 
   useEffect(() => {
     if (!id) return;
-  
+
     const fetchRideAndGetCoords = async () => {
       setLoading(true);
       setError(null);
-  
+
       try {
         // Fetch ride details
         const response = await axios.get(`${API_URL}/rides/${id}`, {
           withCredentials: true,
         });
-        console.log(response.data.ride.startingPoint);
-  
-        // Extract coordinates (assuming they are in the format [latitude, longitude])
+
+        // Extract coordinates
         const startCoords = response.data.ride.startingPoint.coordinates;
         const destCoords = response.data.ride.destination.coordinates;
-        console.log('coordinates===================<', startCoords, destCoords);
-  
+
         // Get addresses from coordinates
         const startAddress = await getAddressFromCoordinates(startCoords.lat, startCoords.lng, MAP_URL);
         const destinationAddress = await getAddressFromCoordinates(destCoords.lat, destCoords.lng, MAP_URL);
-  
-        // Combine ride details with the new addresses
+
+        // Combine ride details
         const rideDetail = {
-          ...response.data.ride, // Spread the existing ride details
-          startAddress, // Add the processed start address
-          destinationAddress, // Add the processed destination address
+          ...response.data.ride,
+          startAddress,
+          destinationAddress,
         };
-        console.log("ride details at ride details ", rideDetail);
-  
-        // Update state with the combined ride details
+
+        // Update state
         setRide(rideDetail);
-  
-        // Now that the ride details are fetched and state is updated, call getCoords
+
+        // Get coordinates for map
         getCoords(rideDetail);
-  
+
       } catch (err) {
         setError(err.message || 'Failed to fetch ride details.');
       } finally {
         setLoading(false);
       }
     };
-  
+
     const getCoords = async (ride) => {
       try {
         // Extract start and end coordinates
@@ -87,51 +87,110 @@ const RideDetailPage = ({ params }) => {
           lat: ride.destination.coordinates.lat,
           lng: ride.destination.coordinates.lng,
         };
-    
-        // Fetch coordinates for all stops  (if stops exist)
+
+        // Fetch coordinates for stops
         const stops = ride.stops
           ? await Promise.all(
-              ride.stops.map((stop) => getAddressCoordinates(stop, MAP_URL))
-            )
+            ride.stops.map((stop) => getAddressCoordinates(stop, MAP_URL))
+          )
           : [];
-    
-        // Example via points (you can modify this as needed)
-        const via = ride.via? await Promise.all(
-          ride.stops.map((stops)=>{
-            getAddressCoordinates(stops,MAP_URL)
+
+        // Via points
+        const via = ride.via ? await Promise.all(
+          ride.stops.map((stops) => {
+            getAddressCoordinates(stops, MAP_URL)
           })
-        ) :[];
-        
-        // Log the results
-        console.log('Start:', start);
+        ) : [];
+
+        // Set state for map
         setStart(start)
-        console.log('End:', end);
         setEnd(end)
-        console.log('Stops:', stops);
         setStops(stops)
-        console.log('Via:', via);
         setVia(via)
-    
-        // Return the coordinates if needed
-        console.log('coordinates fetched')
+
         return { start, end, stops, via };
       } catch (error) {
         console.error('Error in getCoords:', error);
-        throw error; // Re-throw the error if needed
+        throw error;
       }
     };
 
 
     fetchRideAndGetCoords();
-  
-  }, [id]); // Add `id` as a dependency
-  console.log("ride after adress extraction", ride)
+
+  }, [id]);
 
 
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
-  if (!ride) return <div className="p-4">Ride not found.</div>;
+  if (loading) return (
+    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+        <Skeleton className="h-8 w-64 mb-4" />
+      </h1>
+      <div className="lg:flex lg:space-x-8">
+        {/* Ride Details Section */}
+        <Card className="lg:flex-1">
+          <CardHeader>
+            <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
+            <CardDescription><Skeleton className="h-4 w-64" /></CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-10 w-32 mt-4" />
+          </CardContent>
+        </Card>
+
+        {/* Ride Map Section */}
+        <Card className="lg:flex-1">
+          <CardHeader>
+            <CardTitle><Skeleton className="h-6 w-48" /></CardTitle>
+            <CardDescription><Skeleton className="h-4 w-64" /></CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-[400px] w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen ">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mb-6 text-red-500 dark:text-red-400">
+          Error
+        </h1>
+        <p className="text-lg text-gray-700 dark:text-gray-300">{error}</p>
+        <Button
+          onClick={() => router.back()}
+          className="mt-6 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600"
+        >
+          Back
+        </Button>
+      </div>
+    </div>
+  );
+
+  if (!ride) return (
+    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen text-center">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+        Ride Not Found
+      </h1>
+      <p className="text-lg text-gray-700 dark:text-gray-300">
+        Sorry, the ride you are looking for could not be found.
+      </p>
+      <Button
+        onClick={() => router.back()}
+        className="mt-6 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600"
+      >
+        Back
+      </Button>
+    </div>
+  );
 
   // Helper function to render coordinates or address
   const renderLocation = (location) => {
@@ -141,92 +200,190 @@ const RideDetailPage = ({ params }) => {
       }
       return JSON.stringify(location);
     }
-    return location; // Return as-is if it's a string, number, etc.
+    return location;
   };
 
   return (
-    <div className="p-4">
-    <h1 className="text-2xl font-semibold mb-4 text-gray-800">Ride Details</h1>
-    <div className="lg:flex lg:space-x-6"> {/* Flex container for larger screens */}
-      {/* Ride Details Section */}
-      <div className="border p-4 rounded-md shadow-sm bg-white hover:shadow-md transition-shadow duration-300 lg:flex-1">
-        <p className="mb-3">
-          <strong className="text-gray-700">Starting Point:</strong>{" "}
-          <span className="text-gray-600">{ride.startAddress || renderLocation(ride.startingPoint)}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Destination:</strong>{" "}
-          <span className="text-gray-600">{ride.destinationAddress || renderLocation(ride.destination)}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Fare Per Seat:</strong>{" "}
-          <span className="text-gray-600">${ride.farePerSeat}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Vehicle Type:</strong>{" "}
-          <span className="text-gray-600">{ride.vehicleType}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Total Seats Available:</strong>{" "}
-          <span className="text-gray-600">{ride.totalSeatsAvailable}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Start Time:</strong>{" "}
-          <span className="text-gray-600">{new Date(ride.startTime).toLocaleString()}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Duration:</strong>{" "}
-          <span className="text-gray-600">{ride.duration ? `${ride.duration} seconds` : 'N/A'}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Distance:</strong>{" "}
-          <span className="text-gray-600">{ride.distance ? `${ride.distance} meters` : 'N/A'}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Ride Status:</strong>{" "}
-          <span className="text-gray-600">{ride.rideStatus}</span>
-        </p>
-        <p className="mb-3">
-          <strong className="text-gray-700">Stops:</strong>{" "}
-          <span className="text-gray-600">{ride.stops ? ride.stops.join(', ') : 'No stops'}</span>
-        </p>
-        {/* Render riders if needed */}
-        {ride.riders && ride.riders.length > 0 && (
-          <div className="mt-4">
-            <strong className="text-gray-700">Riders:</strong>
-            <ul className="mt-2 space-y-2">
-              {ride.riders.map((rider, index) => (
-                <li key={index} className="p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200">
-                  <p className="text-gray-600"><strong>User:</strong> {rider.user?.toString()}</p>
-                  <p className="text-gray-600"><strong>Seats Booked:</strong> {rider.seatsBooked}</p>
-                  <p className="text-gray-600"><strong>Payment Status:</strong> {rider.paymentStatus}</p>
-                  <p className="text-gray-600"><strong>Status:</strong> {rider.status}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <button
-          onClick={() => router.back()}
-          className="mt-4 bg-gray-300 text-gray-700 p-2 rounded-md hover:bg-gray-400 hover:text-gray-800 transition-colors duration-200"
-        >
-          Back
-        </button>
-        <Link href={`/Booking/${ride._id}`}>
-        <button
-          className="mt-4 bg-gray-300 text-gray-700 p-2 rounded-md hover:bg-gray-400 hover:text-gray-800 transition-colors duration-200"
-          >
-          Book Ride
-        </button>
-          </Link>
-      </div>
-  
-      {/* Ride Map Section */}
-      <div className="mt-6 lg:mt-0 lg:flex-1"> 
-        <RideMap start={start} end={end} stops={stops} via={via} />
+    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen overflow-y-scroll hide-scrollbar pb-30">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+        Ride Details
+      </h1>
+      <div className="lg:flex lg:space-x-8">
+        {/* Ride Details Section */}
+        <Card className="lg:flex-1 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white">
+              Ride Information
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              Details about the selected ride
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Starting Point:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">
+                {ride.startAddress || renderLocation(ride.startingPoint)}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Destination:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">
+                {ride.destinationAddress || renderLocation(ride.destination)}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Fare Per Seat:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">${ride.farePerSeat}</p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Vehicle Type:
+              </span>
+              <Badge
+                variant="secondary"
+                className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 border-blue-200 dark:border-blue-700"
+              >
+                {ride.vehicleType}
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Total Seats Available:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">{ride.totalSeatsAvailable}</p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Start Time:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">
+                {new Date(ride.startTime).toLocaleString()}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Duration:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">
+                {ride.duration ? `${ride.duration} seconds` : 'N/A'}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Distance:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">
+                {ride.distance ? `${ride.distance} meters` : 'N/A'}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Ride Status:
+              </span>
+              <Badge
+                variant="outline"
+                className={
+                  ride.rideStatus === 'available'
+                    ? "text-green-500 dark:text-green-400 border-green-500 dark:border-green-400"
+                    : "text-yellow-500 dark:text-yellow-400 border-yellow-500 dark:border-yellow-400"
+                }
+              >
+                {ride.rideStatus}
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Stops:
+              </span>
+              <p className="text-gray-900 dark:text-gray-100">
+                {ride.stops ? ride.stops.join(', ') : 'No stops'}
+              </p>
+            </div>
+            {/* Render riders if needed */}
+            {ride.riders && ride.riders.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  Riders
+                </h3>
+                <div className="space-y-4">
+                  {ride.riders.map((rider, index) => (
+                    <Card key={index} className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
+                      <CardContent className="space-y-2">
+                        <p className="text-gray-900 dark:text-gray-100">
+                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                            User:
+                          </span>{" "}
+                          {rider.user?.toString()}
+                        </p>
+                        <p className="text-gray-900 dark:text-gray-100">
+                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                            Seats Booked:
+                          </span>{" "}
+                          {rider.seatsBooked}
+                        </p>
+                        <p className="text-gray-900 dark:text-gray-100">
+                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                            Payment Status:
+                          </span>{" "}
+                          {rider.paymentStatus}
+                        </p>
+                        <p className="text-gray-900 dark:text-gray-100">
+                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                            Status:
+                          </span>{" "}
+                          {rider.status}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="flex justify-start space-x-4 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => router.back()}
+                className="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600"
+              >
+                Back
+              </Button>
+              <Link href={`/Booking/${ride._id}`}>
+                <Button
+                  className="bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
+                >
+                  Book Ride
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Ride Map Section */}
+        <Card className="lg:flex-1 mt-6 lg:mt-0 bg-white dark:bg-gray-800 h-fit shadow-lg border border-gray-200 dark:border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white">
+              Ride Map
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              Route and location details
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md w-full overflow-hidden border border-gray-200 dark:border-gray-700">
+              <RideMap start={start} end={end} stops={stops} via={via} className="h-[400px] w-[100%] p-0 sm:p-auto" /> {/* Added className */}
+            </div>
+          </CardContent>
+        
+        </Card>
       </div>
     </div>
-  </div>
   );
 };
 

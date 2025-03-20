@@ -5,10 +5,13 @@ import { getAddressFromCoordinates, getAutoCompleteSuggestions } from "@/lib/uti
 import RideList from "./RideList";
 import _ from "lodash";
 import Loader from "./ui/Loader";
+import Modal from "./Modal";
+import { toast } from "sonner";
 
 const FindRide = () => {
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
   const MAP_URL = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY;
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState("");
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
@@ -68,7 +71,7 @@ const FindRide = () => {
   );
 
   const handleFind = async (e) => {
-    setLoading(true)
+    setLoading(true);
     e.preventDefault();
     try {
       const startTime = `<span class="math-inline">\{date\}T</span>{time}:00Z`;
@@ -80,11 +83,15 @@ const FindRide = () => {
         maxPrice: maxPrice ? parseFloat(maxPrice) : null,
         onboarding: onboarding,
       });
-      setLoading(false)
-      console.log("Rides before processing:", response.data.rides);
       setFoundRides(response.data.rides);
+      setLoading(false);
+      setIsModalOpen(true);
+      console.log("Rides before processing:", response.data.rides);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
+      const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+
+      toast.error(errorMessage);
       console.error("Error finding rides:", error);
       setFoundRides([]);
     }
@@ -113,34 +120,38 @@ const FindRide = () => {
   }, [foundRides, API_URL, MAP_URL]);
 
   useEffect(() => {
+    // Moved the setShowFromSuggestions(false) here.
     if (fromLocation) setShowFromSuggestions(false);
   }, [fromLocation]);
 
   useEffect(() => {
+    // Moved the setShowToSuggestions(false) here.
     if (toLocation) setShowToSuggestions(false);
   }, [toLocation]);
 
   useEffect(() => {
+    // Moved the setShowOnboardingSuggestions(false) here.
     if (onboarding) setShowOnboardingSuggestions(false);
   }, [onboarding]);
 
   return (
-    <div className="relative"> {/* Make the parent div relative */}
+
+    <div className="relative">
+
       {loading && (
         <div className="relative">
           {loading && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-50 pointer-events-none">
-              <div className="absolute inset-0 bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg pointer-events-auto flex justify-center items-center">
+              <div className="absolute inset-0 bg-transparent bg-opacity-20 backdrop-filter backdrop-blur-[5px] pointer-events-auto flex justify-center items-center">
                 <Loader />
               </div>
             </div>
           )}
 
           <div
-            className={`p-4 pb-20 bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200 ${loading ? 'pointer-events-none' : ''
+            className={`p-4 pb-20 bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200 ${loading ? "pointer-events-none" : ""
               }`}
           >
-            {/* Your form and RideList content */}
             <h2 className="text-2xl font-semibold mb-4 text-purple-900 dark:text-purple-100">
               Find a Ride
             </h2>
@@ -166,15 +177,13 @@ const FindRide = () => {
                   className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
                 />
                 {showFromSuggestions && fromSuggestions.length > 0 && (
-                  <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+                  <ul className="absolute mt-2border border-purple-600 dark:border-purple-700 rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200  shadow-lg w-full z-10">
                     {fromSuggestions.map((suggestion, index) => (
                       <li
                         key={index}
                         className="p-2 hover:bg-purple-100 dark:hover:bg-purple-700 rounded-md cursor-pointer"
                         onClick={() => {
-                          setFromLocation(
-                            `${suggestion.name}, ${suggestion.address}`
-                          );
+                          setFromLocation(`${suggestion.name}, ${suggestion.address}`);
                         }}
                       >
                         {suggestion.name}, {suggestion.address}
@@ -203,7 +212,7 @@ const FindRide = () => {
                   className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
                 />
                 {showToSuggestions && toSuggestions.length > 0 && (
-                  <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+                  <ul className="absolute mt-2  border border-purple-600 dark:border-purple-700 rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200  rounded-md shadow-lg w-full z-10">
                     {toSuggestions.map((suggestion, index) => (
                       <li
                         key={index}
@@ -238,7 +247,7 @@ const FindRide = () => {
                   className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
                 />
                 {showOnboardingSuggestions && onboardingSuggestions.length > 0 && (
-                  <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+                  <ul className="absolute mt-2 border border-purple-600 dark:border-purple-700 rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200  shadow-lg w-full z-10">
                     {onboardingSuggestions.map((suggestion, index) => (
                       <li
                         key={index}
@@ -308,20 +317,12 @@ const FindRide = () => {
                 Find Ride
               </button>
             </form>
-            <RideList rides={ridesWithAddresses} />
-
-            {ridesWithAddresses.length === 0 &&
-              foundRides.length !== undefined && (
-                <div className="mt-4 text-purple-600 dark:text-purple-300">
-                  No rides found.
-                </div>
-              )}
           </div>
         </div>
       )}
 
       <div
-        className={`p-4 pb-20 bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200 ${loading ? 'blur-md' : ''
+        className={`p-4 pb-20 bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200 ${loading ? "blur-md" : ""
           }`}
       >
         <h2 className="text-2xl font-semibold mb-4 text-purple-900 dark:text-purple-100">
@@ -329,6 +330,7 @@ const FindRide = () => {
         </h2>
         <form onSubmit={handleFind}>
           {/* ... (Your existing form inputs: from, to, onboarding, date, time, maxPrice) */}
+
           <div className="mb-4 relative">
             <label
               htmlFor="from"
@@ -349,15 +351,13 @@ const FindRide = () => {
               className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
             />
             {showFromSuggestions && fromSuggestions.length > 0 && (
-              <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+              <ul className="absolute mt-2 border border-purple-600 dark:border-purple-700 rounded-md bg-white dark:bg-purple-800 text-purple-800 dark:text-purple-200 shadow-lg w-full z-10">
                 {fromSuggestions.map((suggestion, index) => (
                   <li
                     key={index}
                     className="p-2 hover:bg-purple-100 dark:hover:bg-purple-700 rounded-md cursor-pointer"
                     onClick={() => {
-                      setFromLocation(
-                        `${suggestion.name}, ${suggestion.address}`
-                      );
+                      setFromLocation(`${suggestion.name}, ${suggestion.address}`);
                     }}
                   >
                     {suggestion.name}, {suggestion.address}
@@ -366,6 +366,7 @@ const FindRide = () => {
               </ul>
             )}
           </div>
+
           <div className="mb-4 relative">
             <label
               htmlFor="to"
@@ -386,7 +387,7 @@ const FindRide = () => {
               className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
             />
             {showToSuggestions && toSuggestions.length > 0 && (
-              <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+              <ul className="absolute mt-2 border border-purple-600 dark:border-purple-700 rounded-md bg-white dark:bg-purple-800 text-purple-800 dark:text-purple-200 shadow-lg w-full z-10">
                 {toSuggestions.map((suggestion, index) => (
                   <li
                     key={index}
@@ -401,6 +402,7 @@ const FindRide = () => {
               </ul>
             )}
           </div>
+
           <div className="mb-4 relative">
             <label
               htmlFor="onboarding"
@@ -421,7 +423,7 @@ const FindRide = () => {
               className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
             />
             {showOnboardingSuggestions && onboardingSuggestions.length > 0 && (
-              <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+              <ul className="absolute mt-2 border border-purple-600 dark:border-purple-700 rounded-md bg-white dark:bg-purple-800 text-purple-800 dark:text-purple-200 shadow-lg w-full z-10">
                 {onboardingSuggestions.map((suggestion, index) => (
                   <li
                     key={index}
@@ -436,8 +438,6 @@ const FindRide = () => {
               </ul>
             )}
           </div>
-
-          {/* ... (Your existing date, time, maxPrice inputs and submit button) */}
           <div className="mb-4">
             <label
               htmlFor="date"
@@ -453,6 +453,7 @@ const FindRide = () => {
               className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
             />
           </div>
+
           <div className="mb-4">
             <label
               htmlFor="findTime"
@@ -468,6 +469,7 @@ const FindRide = () => {
               className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
             />
           </div>
+
           <div className="mb-4">
             <label
               htmlFor="maxPrice"
@@ -484,6 +486,8 @@ const FindRide = () => {
               className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
             />
           </div>
+
+
           <button
             type="submit"
             className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md"
@@ -491,14 +495,13 @@ const FindRide = () => {
             Find Ride
           </button>
         </form>
-        <RideList rides={ridesWithAddresses} />
 
-        {ridesWithAddresses.length === 0 &&
-          foundRides.length !== undefined && (
-            <div className="mt-4 text-purple-600 dark:text-purple-300">
-              No rides found.
-            </div>
-          )}
+        <Modal isOpen={isModalOpen}   onClose={() => setIsModalOpen(false)}>
+          <h2 className="text-xl font-bold">Choose the Ride that suites u the best !</h2>
+          <p>One step close towards saving the earth</p>
+          <RideList rides={ridesWithAddresses} />
+
+        </Modal>
       </div>
     </div>
   );

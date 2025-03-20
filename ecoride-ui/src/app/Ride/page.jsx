@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef,useState } from "react";
+import React, { useRef, useState } from "react";
 import CreateRide from "@/components/CreateRide";
 import FindRide from "@/components/FindRide";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const RidePage = () => {
     const [activeTab, setActiveTab] = useState("create");
-  const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
     const router = useRouter();
 
     const effectRan = useRef(false); // Initialize ref to false
@@ -43,8 +43,8 @@ const RidePage = () => {
                 <button
                     onClick={() => setActiveTab("create")}
                     className={`px-6 py-2 font-medium transition-all text-lg rounded-md border-2 ${activeTab === "create"
-                            ? "bg-purple-600 text-white shadow-lg border-purple-600"
-                            : "text-gray-700 hover:bg-purple-500 hover:text-white border-gray-400 dark:text-purple-300"
+                        ? "bg-purple-600 text-white shadow-lg border-purple-600"
+                        : "text-gray-700 hover:bg-purple-500 hover:text-white border-gray-400 dark:text-purple-300"
                         } transform hover:scale-105 active:scale-95`}
                 >
                     Create Ride
@@ -52,8 +52,8 @@ const RidePage = () => {
                 <button
                     onClick={() => setActiveTab("find")}
                     className={`px-6 py-2 font-medium transition-all text-lg rounded-md border-2 ${activeTab === "find"
-                            ? "bg-purple-600 text-white shadow-lg border-purple-600"
-                            : "text-gray-700 hover:bg-purple-500 hover:text-white border-gray-400 dark:text-purple-300"
+                        ? "bg-purple-600 text-white shadow-lg border-purple-600"
+                        : "text-gray-700 hover:bg-purple-500 hover:text-white border-gray-400 dark:text-purple-300"
                         } transform hover:scale-105 active:scale-95`}
                 >
                     Find Ride
