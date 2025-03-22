@@ -13,7 +13,7 @@ const CarpoolLandingPage = () => {
       >
         <div className="text-center">
           <h1 className="text-5xl font-bold mb-6 text-purple-800 dark:text-purple-200">Ride Smarter, Save Together</h1>
-          <p className="text-2xl mb-8 text-purple-700 dark:text-purple-300">Join the carpooling revolution and share rides with ease.</p>
+          <p className="text-2xl mb-8 text-purple-800 dark:text-purple-300">Join the carpooling revolution and share rides with ease.</p>
           <Link href='/Ride'>
           <button className="bg-purple-300 cursor-pointer text-purple-800 px-6 py-3 rounded hover:bg-purple-400 dark:bg-purple-700 dark:text-purple-200 dark:hover:bg-purple-800 transition-colors duration-300">
             Get Started
@@ -23,7 +23,7 @@ const CarpoolLandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 px-4 bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+      <section id="features" className="py-16 px-4 bg-purple-200 dark:bg-gray-900 text-purple-800 dark:text-purple-200">
         <h2 className="text-4xl font-bold text-center mb-12">Why Choose Us?</h2>
         <div className="flex flex-wrap justify-center gap-8">
           <div className="bg-purple-300 dark:bg-purple-800 p-6 rounded-lg shadow-md max-w-sm text-center transition-shadow duration-300 hover:shadow-lg dark:hover:shadow-2xl">
@@ -42,7 +42,7 @@ const CarpoolLandingPage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-16 px-4 bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-200">
+      <section id="how-it-works" className="py-16 px-4 bg-purple-100 dark:bg-gray-950 text-purple-800 dark:text-purple-200">
         <h2 className="text-4xl font-bold text-center mb-12">How It Works</h2>
         <div className="flex flex-wrap justify-center gap-8">
           <div className="text-center max-w-sm">
@@ -61,7 +61,7 @@ const CarpoolLandingPage = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-16 px-4 pb-30 bg-purple-300 dark:bg-purple-800 text-purple-800 dark:text-purple-200 text-center">
+      <section className="py-16 px-4 pb-30 bg-purple-200 dark:bg-gray-800 text-purple-800 dark:text-purple-200 text-center">
         <h2 className="text-4xl font-bold mb-8">Ready to Start Carpooling?</h2>
         <Link href="/SignUp">
         <button className="bg-white cursor-pointer text-purple-600 dark:bg-purple-200 dark:text-purple-800 px-8 py-3 rounded hover:bg-gray-100 dark:hover:bg-gray-300 transition-colors duration-300">

@@ -1,8 +1,8 @@
 import { body } from 'express-validator';
 import { Router } from 'express';
-import {registerUser,loginUser,logoutUser,getUserProfile} from '../controllers/user.controller.js';
+import {registerUser,loginUser,logoutUser,getUserProfile, verifyOtp} from '../controllers/user.controller.js';
 import { authUser } from '../middlewares/auth.middleware.js';
-
+import { createAndSendOtp } from '../controllers/user.controller.js';
 
 const router = Router();    
 
@@ -25,6 +25,9 @@ router.get('/profile', authUser, getUserProfile)
 
 router.get('/logout', authUser, logoutUser)
 
+router.post('/getOtp',createAndSendOtp)
+
+router.post('/verifyOtp',verifyOtp)
 
 
 export default router;

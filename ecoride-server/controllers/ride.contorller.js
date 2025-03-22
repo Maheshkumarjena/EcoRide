@@ -8,12 +8,14 @@ import { getRouteCoordinates } from "../services/map.service.js";
 import { calculateDistanceWithCoords } from "../services/map.service.js";
 import { processRides } from "../services/map.service.js";
 
-export const generateOtp = async (num) => {
-    const otp = crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
-    return otp;
-};
 
-
+export const generateOtp = (length) => {
+    let otp = '';
+    for (let i = 0; i < length; i++) {
+      otp += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
+    }
+    return parseInt(otp, 10); // Convert the string to a number
+  };
 
 
 export const createRide = async (req, res) => {

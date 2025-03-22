@@ -1,5 +1,85 @@
 import userModel from '../models/user.model.js';
 import { createUser } from '../services/user.service.js';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
+import { generateOtp } from './ride.contorller.js';
+
+console.log("email service id at user.contorller.js====================>",process.env.EMAIL_JS_PUBLICKEY)
+// Email configuration -  EmailJS service and template IDs, and Public Key
+const emailConfig = {
+    serviceId: process.env.EMAIL_JS_SERVICEID,      // Replace with your EmailJS service ID
+    templateId: process.env.EMAIL_JS_TEMPLETID,    // Replace with your EmailJS template ID
+    publicKey: process.env.EMAIL_JS_PUBLICKEY,        // Replace with your EmailJS public key
+};
+
+
+export const createAndSendOtp = async (req,res) => {
+    try {
+        console.log('req. body at create otp----------->',req.body)
+        const { email } = req.body;
+    
+        // Find the user by email
+        const user = await userModel.findOne({ email });
+    
+        if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+        }
+    
+        // Generate a new OTP
+        const verificationCode = generateOtp(6);
+        
+    
+        // Update or create the verification code in the user document
+        user.verificationCode = verificationCode;
+        user.verificationCodeExpiresAt = Date.now() + 3600000; // OTP expires in 1 hour (adjust as needed)
+        await user.save();
+    
+        // Send the verification email (you can also handle this in the background)
+        //await sendVerificationEmail(email, verificationCode); // uncomment if you want to send email from backend.
+        res.status(200).json({ verificationCode, message: 'Verification code generated.' });
+    
+      } catch (error) {
+        console.error('Error generating verification code:', error);
+        res.status(500).json({ message: 'Internal server error.' });
+      }
+};
+
+// New function to handle sending the verification email
+export const verifyOtp = async (req, res, next) => {
+    console.log("verification function hit",req.body)
+    try {
+        const { email, verificationCode } = req.body;
+        console.log("email , vc",email, verificationCode)
+    
+        // Find the user by email
+        const user = await userModel.findOne({ email });
+        console.log("verification code", verificationCode)
+        console.log("user at verify otp ==========<", user)
+        if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+        }
+    
+        // Check if the verification code matches and is not expired
+        if (user.verificationCode == verificationCode && user.verificationCodeExpiresAt > Date.now()) {
+          // Verification successful
+          user.verified = true; // Mark the user as verified
+          user.verificationCode = undefined; // Clear the verification code
+          user.verificationCodeExpires = undefined; // Clear the expiration date
+          await user.save();
+    
+          res.status(200).json({ message: 'Email verified successfully.' });
+        } else {
+          // Verification failed
+          res.status(400).json({ message: 'Invalid verification code or code expired.' });
+        }
+      } catch (error) {
+        console.error('Error verifying code:', error);
+        res.status(500).json({ message: 'Internal server error.' });
+      }
+};
+
+
 
 export const registerUser = async (req, res, next) => {
 
@@ -34,7 +114,7 @@ export const registerUser = async (req, res, next) => {
 
     const userWithoutPassword = user.toObject();
     delete userWithoutPassword.password;
-    res.status(201).json({ token, user: userWithoutPassword });
+    res.status(201).json({ message:'user registered successfully', token, user: userWithoutPassword  });
 
 
 }

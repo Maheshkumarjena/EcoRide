@@ -37,7 +37,8 @@ export const createBooking = async (req, res) => {
     }
 
     // Generate OTP
-    const otp =JSON.stringify(generateOtp(5));
+    const otp =generateOtp(5);
+    console.log("otp generated at booking controller  ==========>", otp)
 
     // Add rider to the ride
     ride.riders.push({
