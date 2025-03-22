@@ -131,105 +131,105 @@ const CreateRide = () => {
   }
 
   return (
-    <div className="p-4 pb-20  bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
-      <h2 className="text-2xl font-semibold mb-4 text-purple-900 dark:text-purple-100">Create a Ride</h2>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-      {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
+    <div className="p-4 pb-20 text-purple-800 dark:text-purple-200">
+  <h2 className="text-2xl font-semibold mb-4 text-purple-900 dark:text-purple-100">Create a Ride</h2>
+  {error && <div className="text-red-500 mb-4">{error}</div>}
+  {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4 relative">
-          <label htmlFor="departure" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Departure</label>
-          <input
-            type="text"
-            id="departure"
-            value={departure}
-            onChange={(e) => {
-              setDeparture(e.target.value);
-              handleDepartureSearch(e.target.value);
-            }}
-            onBlur={() => setTimeout(() => setShowDepartureSuggestions(false), 200)}
-            placeholder="Enter departure location"
-            className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
-          />
-          {showDepartureSuggestions && departureSuggestions.length > 0 && (
-            <ul className="absolute mt-2 bg-white rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
-              {departureSuggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  className="p-2 hover:bg-purple-100 dark:hover:bg-purple-700 rounded-md cursor-pointer"
-                  onClick={() => {
-                    setDeparture(`${suggestion.name}, ${suggestion.address}`);
-                  }}
-                >
-                  {`${suggestion.name}, ${suggestion.address}`}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="mb-4 relative">
-          <label htmlFor="destination" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Destination</label>
-          <input
-            type="text"
-            id="destination"
-            value={destination}
-            onChange={(e) => {
-              setDestination(e.target.value);
-              handleDestinationSearch(e.target.value);
-            }}
-            onBlur={() => setTimeout(() => setShowDestinationSuggestions(false), 200)}
-            placeholder="Enter destination location"
-            className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300"
-          />
-          {showDestinationSuggestions && destinationSuggestions.length > 0 && (
-            <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
-              {destinationSuggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  className="p-2 hover:bg-purple-100 dark:hover:bg-purple-700 rounded-md cursor-pointer"
-                  onClick={() => {
-                    setDestination(`${suggestion.name}, ${suggestion.address}`);
-                  }}
-                >
-                  {`${suggestion.name}, ${suggestion.address}`}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="date" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Date</label>
-          <input type="date" id="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="time" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Starting Time</label>
-          <input type="time" id="time" value={time} onChange={(e) => setTime(e.target.value)} className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="expectedArrivalTime" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Expected Arrival Time</label>
-          <input type="time" id="expectedArrivalTime" value={expectedArrivalTime} onChange={(e) => setExpectedArrivalTime(e.target.value)} className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="seats" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Seats Available</label>
-          <input type="number" id="seats" value={seats} onChange={(e) => setSeats(e.target.value)} placeholder="Enter number of seats" className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="price" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Price</label>
-          <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price per seat" className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="stops" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Stops (if any)</label>
-          <input type="text" id="stops" value={stops} onChange={(e) => setStops(e.target.value)} placeholder="Enter stops (comma-separated)" className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="vehicleType" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Vehicle Type</label>
-          <input type="text" id="vehicleType" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} placeholder="Enter vehicle type" className="mt-1 p-2 w-full border border-purple-600 dark:border-purple-700 rounded-md bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 placeholder-purple-600 dark:placeholder-purple-300 focus:border-purple-700 dark:focus:border-purple-300 focus:ring-purple-700 dark:focus:ring-purple-300" />
-        </div>
-        <button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md">Create Ride</button>
-      </form>
+  <form onSubmit={handleSubmit}>
+    <div className="mb-4 relative">
+      <label htmlFor="departure" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Departure</label>
+      <input
+        type="text"
+        id="departure"
+        value={departure}
+        onChange={(e) => {
+          setDeparture(e.target.value);
+          handleDepartureSearch(e.target.value);
+        }}
+        onBlur={() => setTimeout(() => setShowDepartureSuggestions(false), 200)}
+        placeholder="Enter departure location"
+        className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500"
+      />
+      {showDepartureSuggestions && departureSuggestions.length > 0 && (
+        <ul className="absolute mt-2 bg-white rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+          {departureSuggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="p-2 hover:bg-purple-100 dark:hover:bg-purple-700 rounded-md cursor-pointer"
+              onClick={() => {
+                setDeparture(`${suggestion.name}, ${suggestion.address}`);
+              }}
+            >
+              {`${suggestion.name}, ${suggestion.address}`}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
+
+    <div className="mb-4 relative">
+      <label htmlFor="destination" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Destination</label>
+      <input
+        type="text"
+        id="destination"
+        value={destination}
+        onChange={(e) => {
+          setDestination(e.target.value);
+          handleDestinationSearch(e.target.value);
+        }}
+        onBlur={() => setTimeout(() => setShowDestinationSuggestions(false), 200)}
+        placeholder="Enter destination location"
+        className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500"
+      />
+      {showDestinationSuggestions && destinationSuggestions.length > 0 && (
+        <ul className="absolute mt-2 bg-white border border-purple-600 dark:border-purple-700 rounded-md dark:bg-purple-800 border border-purple-600 dark:border-purple-700 text-purple-800 dark:text-purple-200 rounded-md shadow-lg w-full z-10">
+          {destinationSuggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="p-2 hover:bg-purple-100 dark:hover:bg-purple-700 rounded-md cursor-pointer"
+              onClick={() => {
+                setDestination(`${suggestion.name}, ${suggestion.address}`);
+              }}
+            >
+              {`${suggestion.name}, ${suggestion.address}`}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+
+    <div className="mb-4">
+      <label htmlFor="date" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Date</label>
+      <input type="date" id="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="time" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Starting Time</label>
+      <input type="time" id="time" value={time} onChange={(e) => setTime(e.target.value)} className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="expectedArrivalTime" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Expected Arrival Time</label>
+      <input type="time" id="expectedArrivalTime" value={expectedArrivalTime} onChange={(e) => setExpectedArrivalTime(e.target.value)} className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="seats" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Seats Available</label>
+      <input type="number" id="seats" value={seats} onChange={(e) => setSeats(e.target.value)} placeholder="Enter number of seats" className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="price" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Price</label>
+      <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Enter price per seat" className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="stops" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Stops (if any)</label>
+      <input type="text" id="stops" value={stops} onChange={(e) => setStops(e.target.value)} placeholder="Enter stops (comma-separated)" className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="vehicleType" className="block text-sm font-medium text-purple-700 dark:text-purple-300">Vehicle Type</label>
+      <input type="text" id="vehicleType" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} placeholder="Enter vehicle type" className="mt-1 p-2 w-full border border-purple-400 dark:border-purple-600 rounded-md bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-300 placeholder-purple-600 dark:placeholder-purple-400 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500" />
+    </div>
+    <button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md">Create Ride</button>
+  </form>
+</div>
   );
 };
 

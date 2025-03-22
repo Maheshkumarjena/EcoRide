@@ -135,77 +135,76 @@ const VerifyEmail = () => {
 
   return (
 
+<div className="flex flex-col items-center justify-center min-h-screen bg-purple-100 dark:bg-gray-900">
+  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-96">
+    {isVerified ? (
+      <>
+        <h1 className="text-xl font-semibold text-center mb-4 text-green-600 dark:text-green-400">
+          {email} verified successfully!
+        </h1>
+        <p className="text-center text-purple-800 dark:text-purple-300">
+          Redirecting to home page...
+        </p>
+      </>
+    ) : (
+      <>
+        <h1 className="text-xl font-semibold text-center mb-4 text-purple-800 dark:text-purple-200">
+          Email Verification
+        </h1>
+        <p className="text-center text-purple-800 dark:text-purple-300 mb-2">
+          Verification email sent to:
+        </p>
+        <p className="text-center font-medium text-purple-600 dark:text-purple-400">
+          {email}
+        </p>
 
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-96">
-        {isVerified ? (
-          <>
-            <h1 className="text-xl font-semibold text-center mb-4 text-green-600 dark:text-green-400">
-              {email} verified successfully!
-            </h1>
-            <p className="text-center text-gray-700 dark:text-gray-300">
-              Redirecting to home page...
-            </p>
-          </>
+        {loading && <p className="text-center text-yellow-500 mt-3">Processing...</p>}
+
+        <div className="flex justify-between mt-4">
+          {verificationCode.map((digit, index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleOTPChange(index, e.target.value)}
+              className="w-12 h-12 text-center text-xl border border-purple-300 dark:border-purple-600 rounded-lg focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 bg-white dark:bg-gray-700 text-purple-800 dark:text-purple-200"
+            />
+          ))}
+        </div>
+        <button
+          onClick={verifyCode}
+          className="w-full bg-purple-500 text-white py-2 mt-6 rounded-lg hover:bg-purple-600 disabled:bg-purple-300"
+          disabled={loading}
+        >
+          Verify Code
+        </button>
+        {resendCooldown === 0 ? (
+          <button
+            onClick={() => sendVerificationEmail(email)}
+            className="w-full bg-gray-500 text-white py-2 mt-2 rounded-lg hover:bg-gray-600 disabled:bg-gray-300"
+            disabled={loading}
+          >
+            Resend Verification Code
+          </button>
         ) : (
-          <>
-            <h1 className="text-xl font-semibold text-center mb-4 text-gray-900 dark:text-gray-100">
-              Email Verification
-            </h1>
-            <p className="text-center text-gray-700 dark:text-gray-300 mb-2">
-              Verification email sent to:
-            </p>
-            <p className="text-center font-medium text-blue-500 dark:text-blue-400">
-              {email}
-            </p>
-
-            {loading && <p className="text-center text-yellow-500 mt-3">Processing...</p>}
-
-            <div className="flex justify-between mt-4">
-              {verificationCode.map((digit, index) => (
-                <input
-                  key={index}
-                  id={`otp-${index}`}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleOTPChange(index, e.target.value)}
-                  className="w-12 h-12 text-center text-xl border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                />
-              ))}
-            </div>
-            <button
-              onClick={verifyCode}
-              className="w-full bg-blue-500 text-white py-2 mt-6 rounded-lg hover:bg-blue-600 disabled:bg-blue-300"
-              disabled={loading}
-            >
-              Verify Code
-            </button>
-            {resendCooldown === 0 ? (
-              <button
-                onClick={() => sendVerificationEmail(email)}
-                className="w-full bg-gray-500 text-white py-2 mt-2 rounded-lg hover:bg-gray-600 disabled:bg-gray-300"
-                disabled={loading}
-              >
-                Resend Verification Code
-              </button>
-            ) : (
-              <p className="text-center mt-2 text-gray-500">Resend in {resendCooldown}s</p>
-            )}
-
-            {message && (
-              <p
-                className={`text-center mt-3 ${
-                  message.includes("successfully") ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {message}
-              </p>
-            )}
-          </>
+          <p className="text-center mt-2 text-gray-500">Resend in {resendCooldown}s</p>
         )}
-      </div>
-    </div>
+
+        {message && (
+          <p
+            className={`text-center mt-3 ${
+              message.includes("successfully") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+      </>
+    )}
+  </div>
+</div>
   );
 };
 

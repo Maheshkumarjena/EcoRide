@@ -3,11 +3,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { getAddressFromCoordinates } from "@/lib/utils";
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
-import { cn } from "@/lib/utils";
 
 const BookingPage = ({ params }) => {
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
@@ -121,11 +120,10 @@ const BookingPage = ({ params }) => {
     return <div className="p-4">Loading...</div>;
   }
 
-  console.log("rides and rides and", rideWithAddresses);
   return (
-    <div className="p-4 pb-20 bg-gray-100 dark:bg-gray-900 min-h-screen flex justify-center  dark:text-w ">
-      <div className="max-w-2xl w-full pb-14 hide-scrollbar overflow-y-scroll  ">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white ">Book Ride</h2>
+    <div className="p-4 pb-20 bg-purple-100 dark:bg-gray-900 min-h-screen flex justify-center dark:text-white">
+      <div className="max-w-2xl w-full pb-14 hide-scrollbar overflow-y-scroll">
+        <h2 className="text-3xl font-bold mb-6 text-purple-800 dark:text-purple-200">Book Ride</h2>
 
         {error && (
           <div className="text-red-500 mb-4">{error}</div>
@@ -136,47 +134,47 @@ const BookingPage = ({ params }) => {
         )}
 
         {rideWithAddresses && (
-          <Card className="bg-white dark:bg-gray-800 shadow-lg border  border-gray-200 dark:border-gray-700  ">
+          <Card className="bg-white dark:bg-gray-800 shadow-lg border border-purple-300 dark:border-purple-600">
             <CardHeader>
-              <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-gray-100  hite">
+              <CardTitle className="text-2xl font-semibold text-purple-800 dark:text-purple-200">
                 Ride Details
               </CardTitle>
-              <CardDescription className="text-gray-500 dark:text-gray-400">
+              <CardDescription className="text-purple-500 dark:text-purple-400">
                 Confirm your booking details
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">From:</span>
-                <p className="text-gray-900 dark:text-gray-100">{rideWithAddresses.startAddress}</p>
+                <span className="font-medium text-purple-700 dark:text-purple-300">From:</span>
+                <p className="text-purple-800 dark:text-purple-200">{rideWithAddresses.startAddress}</p>
               </div>
               <div className="space-y-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">To:</span>
-                <p className="text-gray-900 dark:text-gray-100">{rideWithAddresses.destinationAddress}</p>
+                <span className="font-medium text-purple-700 dark:text-purple-300">To:</span>
+                <p className="text-purple-800 dark:text-purple-200">{rideWithAddresses.destinationAddress}</p>
               </div>
               <div className="space-y-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">Date:</span>
-                <p className="text-gray-900 dark:text-gray-100">
+                <span className="font-medium text-purple-700 dark:text-purple-300">Date:</span>
+                <p className="text-purple-800 dark:text-purple-200">
                   {new Date(rideWithAddresses.startTime).toLocaleDateString()}
                 </p>
               </div>
               <div className="space-y-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">Time:</span>
-                <p className="text-gray-900 dark:text-gray-100">
+                <span className="font-medium text-purple-700 dark:text-purple-300">Time:</span>
+                <p className="text-purple-800 dark:text-purple-200">
                   {new Date(rideWithAddresses.startTime).toLocaleTimeString()}
                 </p>
               </div>
               <div className="space-y-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">Price per seat:</span>
-                <p className="text-gray-900 dark:text-gray-100">${rideWithAddresses.farePerSeat}</p>
+                <span className="font-medium text-purple-700 dark:text-purple-300">Price per seat:</span>
+                <p className="text-purple-800 dark:text-purple-200">{rideWithAddresses.farePerSeat}</p>
               </div>
               <div className="space-y-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">Seats Available:</span>
-                <p className="text-gray-900 dark:text-gray-100">{rideWithAddresses.totalSeatsAvailable}</p>
+                <span className="font-medium text-purple-700 dark:text-purple-300">Seats Available:</span>
+                <p className="text-purple-800 dark:text-purple-200">{rideWithAddresses.totalSeatsAvailable}</p>
               </div>
 
               <div className="space-y-4 mt-6">
-                <label htmlFor="seats" className="block text-sm   font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="seats" className="block text-sm font-medium text-purple-700 dark:text-purple-300">
                   Number of Seats
                 </label>
                 <Input
@@ -187,9 +185,8 @@ const BookingPage = ({ params }) => {
                   min="1"
                   max={ride.totalSeatsAvailable}
                   placeholder="Enter number of seats"
-                  className="mt-1 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-purple-400 dark:border-purple-600 focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 w-full bg-white dark:bg-gray-800 text-purple-800 dark:text-purple-200 border border-purple-400 dark:border-purple-600 focus:ring-blue-500 focus:border-blue-500"
                 />
-
               </div>
 
               <Button

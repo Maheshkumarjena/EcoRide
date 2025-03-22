@@ -204,186 +204,185 @@ const RideDetailPage = ({ params }) => {
   };
 
   return (
-    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen overflow-y-scroll hide-scrollbar pb-30">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-        Ride Details
-      </h1>
-      <div className="lg:flex lg:space-x-8">
-        {/* Ride Details Section */}
-        <Card className="lg:flex-1 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white">
-              Ride Information
-            </CardTitle>
-            <CardDescription className="text-gray-500 dark:text-gray-400">
-              Details about the selected ride
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Starting Point:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">
-                {ride.startAddress || renderLocation(ride.startingPoint)}
-              </p>
+    <div className="p-4 bg-purple-100 dark:bg-gray-900 min-h-screen overflow-y-scroll hide-scrollbar pb-30">
+    <h1 className="text-3xl font-bold mb-6 text-purple-800 dark:text-purple-200">
+      Ride Details
+    </h1>
+    <div className="lg:flex lg:space-x-8">
+      {/* Ride Details Section */}
+      <Card className="lg:flex-1 bg-white dark:bg-gray-800 shadow-lg border border-purple-300 dark:border-purple-600">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-purple-800 dark:text-purple-200">
+            Ride Information
+          </CardTitle>
+          <CardDescription className="text-purple-500 dark:text-purple-400">
+            Details about the selected ride
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Starting Point:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">
+              {ride.startAddress || renderLocation(ride.startingPoint)}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Destination:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">
+              {ride.destinationAddress || renderLocation(ride.destination)}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Fare Per Seat:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">${ride.farePerSeat}</p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Vehicle Type:
+            </span>
+            <Badge
+              variant="secondary"
+              className="bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 border-purple-300 dark:border-purple-700"
+            >
+              {ride.vehicleType}
+            </Badge>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Total Seats Available:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">{ride.totalSeatsAvailable}</p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Start Time:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">
+              {new Date(ride.startTime).toLocaleString()}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Duration:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">
+              {ride.duration ? `${ride.duration} seconds` : 'N/A'}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Distance:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">
+              {ride.distance ? `${ride.distance} meters` : 'N/A'}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Ride Status:
+            </span>
+            <Badge
+              variant="outline"
+              className={
+                ride.rideStatus === 'available'
+                  ? "text-green-500 dark:text-green-400 border-green-500 dark:border-green-400"
+                  : "text-yellow-500 dark:text-yellow-400 border-yellow-500 dark:border-yellow-400"
+              }
+            >
+              {ride.rideStatus}
+            </Badge>
+          </div>
+          <div className="space-y-2">
+            <span className="font-medium text-purple-700 dark:text-purple-300">
+              Stops:
+            </span>
+            <p className="text-purple-800 dark:text-purple-200">
+              {ride.stops ? ride.stops.join(', ') : 'No stops'}
+            </p>
+          </div>
+          {/* Render riders if needed */}
+          {ride.riders && ride.riders.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-4">
+                Riders
+              </h3>
+              <div className="space-y-4">
+                {ride.riders.map((rider, index) => (
+                  <Card key={index} className="bg-purple-50 dark:bg-gray-700 border border-purple-300 dark:border-purple-600">
+                  <CardContent className="space-y-2">
+                    <p className="text-purple-800 dark:text-purple-200">
+                      <span className="font-medium text-purple-700 dark:text-purple-300">
+                        User:
+                      </span>{" "}
+                      {rider.user?.toString()}
+                    </p>
+                    <p className="text-purple-800 dark:text-purple-200">
+                      <span className="font-medium text-purple-700 dark:text-purple-300">
+                        Seats Booked:
+                      </span>{" "}
+                      {rider.seatsBooked}
+                    </p>
+                    <p className="text-purple-800 dark:text-purple-200">
+                      <span className="font-medium text-purple-700 dark:text-purple-300">
+                        Payment Status:
+                      </span>{" "}
+                      {rider.paymentStatus}
+                    </p>
+                    <p className="text-purple-800 dark:text-purple-200">
+                      <span className="font-medium text-purple-700 dark:text-purple-300">
+                        Status:
+                      </span>{" "}
+                      {rider.status}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Destination:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">
-                {ride.destinationAddress || renderLocation(ride.destination)}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Fare Per Seat:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">${ride.farePerSeat}</p>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Vehicle Type:
-              </span>
-              <Badge
-                variant="secondary"
-                className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 border-blue-200 dark:border-blue-700"
-              >
-                {ride.vehicleType}
-              </Badge>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Total Seats Available:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">{ride.totalSeatsAvailable}</p>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Start Time:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">
-                {new Date(ride.startTime).toLocaleString()}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Duration:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">
-                {ride.duration ? `${ride.duration} seconds` : 'N/A'}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Distance:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">
-                {ride.distance ? `${ride.distance} meters` : 'N/A'}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Ride Status:
-              </span>
-              <Badge
-                variant="outline"
-                className={
-                  ride.rideStatus === 'available'
-                    ? "text-green-500 dark:text-green-400 border-green-500 dark:border-green-400"
-                    : "text-yellow-500 dark:text-yellow-400 border-yellow-500 dark:border-yellow-400"
-                }
-              >
-                {ride.rideStatus}
-              </Badge>
-            </div>
-            <div className="space-y-2">
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                Stops:
-              </span>
-              <p className="text-gray-900 dark:text-gray-100">
-                {ride.stops ? ride.stops.join(', ') : 'No stops'}
-              </p>
-            </div>
-            {/* Render riders if needed */}
-            {ride.riders && ride.riders.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Riders
-                </h3>
-                <div className="space-y-4">
-                  {ride.riders.map((rider, index) => (
-                    <Card key={index} className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
-                      <CardContent className="space-y-2">
-                        <p className="text-gray-900 dark:text-gray-100">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            User:
-                          </span>{" "}
-                          {rider.user?.toString()}
-                        </p>
-                        <p className="text-gray-900 dark:text-gray-100">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            Seats Booked:
-                          </span>{" "}
-                          {rider.seatsBooked}
-                        </p>
-                        <p className="text-gray-900 dark:text-gray-100">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            Payment Status:
-                          </span>{" "}
-                          {rider.paymentStatus}
-                        </p>
-                        <p className="text-gray-900 dark:text-gray-100">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            Status:
-                          </span>{" "}
-                          {rider.status}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-            <div className="flex justify-start space-x-4 mt-6">
-              <Button
-                variant="outline"
-                onClick={() => router.back()}
-                className="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600"
-              >
-                Back
-              </Button>
-              <Link href={`/Booking/${ride._id}`}>
-                <Button
-                  className="bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700"
-                >
-                  Book Ride
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
+        <div className="flex justify-start space-x-4 mt-6">
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+            className="bg-purple-300 dark:bg-gray-700 text-purple-700 dark:text-purple-300 hover:bg-purple-400 dark:hover:bg-gray-600"
+          >
+            Back
+          </Button>
+          <Link href={`/Booking/${ride._id}`}>
+            <Button
+              className="bg-purple-500 dark:bg-purple-600 text-white hover:bg-purple-600 dark:hover:bg-purple-700"
+            >
+              Book Ride
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
 
-        {/* Ride Map Section */}
-        <Card className="lg:flex-1 mt-6 lg:mt-0 bg-white dark:bg-gray-800 h-fit shadow-lg border border-gray-200 dark:border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white">
-              Ride Map
-            </CardTitle>
-            <CardDescription className="text-gray-500 dark:text-gray-400">
-              Route and location details
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md w-full overflow-hidden border border-gray-200 dark:border-gray-700">
-              <RideMap start={start} end={end} stops={stops} via={via} className="h-[400px] w-[100%] p-0 sm:p-auto" /> {/* Added className */}
-            </div>
-          </CardContent>
-        
-        </Card>
-      </div>
-    </div>
+    {/* Ride Map Section */}
+    <Card className="lg:flex-1 mt-6 lg:mt-0 bg-white dark:bg-gray-800 h-fit shadow-lg border border-purple-300 dark:border-purple-600">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-purple-800 dark:text-purple-200">
+          Ride Map
+        </CardTitle>
+        <CardDescription className="text-purple-500 dark:text-purple-400">
+          Route and location details
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md w-full overflow-hidden border border-purple-300 dark:border-purple-600">
+          <RideMap start={start} end={end} stops={stops} via={via} className="h-[400px] w-[100%] p-0 sm:p-auto" />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</div>
   );
 };
 
