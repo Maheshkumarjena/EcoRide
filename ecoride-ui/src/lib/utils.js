@@ -108,6 +108,71 @@ export const getAddressCoordinates = async (address,apiKey) => {
 };
 
 
+// export const getDistanceTime = async (origin, stops,destination) => {
+//   const apiKey = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY;
+//   const url = `https://graphhopper.com/api/1/route?point=${origin.lat},${origin.lng}&point=${destination.lat},${destination.lng}&vehicle=car&locale=en&key=${apiKey}`;
+
+//   try {
+//     const response = await fetch(url);
+//     const data = await response.json();
+
+//     if (data.paths && data.paths.length > 0) {
+//       const { distance, time } = data.paths[0];
+
+//       // Convert time from milliseconds to minutes
+//       const durationInMinutes = Math.round(time / 60000);
+
+//       console.log(`Distance: ${distance / 1000} km, Time: ${durationInMinutes} min`);
+//       return { distance: distance / 1000, time: durationInMinutes };
+//     } else {
+//       console.error("No route found between the given locations.");
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("Error fetching distance and time:", error);
+//     return null;
+//   }
+// };
+
+
+export const getDistanceTime = async (origin, stops, destination) => {
+  console.log("coordinates at distanceTime=========>",origin,stops,destination)
+  const apiKey = process.env.NEXT_PUBLIC_RAPHHOPPER_API_KEY;
+  let url = `https://graphhopper.com/api/1/route?point=${origin.lat},${origin.lng}`;
+
+  // Add stops to the URL
+  if (stops && stops.length > 0) {
+    stops.forEach(stop => {
+      url += `&point=${stop.lat},${stop.lng}`;
+    });
+  }
+
+  // Add destination to the URL
+  url += `&point=${destination.lat},${destination.lng}&vehicle=car&locale=en&key=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.paths && data.paths.length > 0) {
+      const { distance, time } = data.paths[0];
+
+      // Convert time from milliseconds to minutes
+      const durationInMinutes = Math.round(time / 60000);
+
+      console.log(`Distance: ${distance / 1000} km, Time: ${durationInMinutes} min`);
+      return { distance: distance / 1000, time: durationInMinutes };
+    } else {
+      console.error("No route found between the given locations.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching distance and time:", error);
+    return null;
+  }
+};
+
+
 
 // Example usage within a React component (or any frontend environment):
 // async function exampleUsage(latitude, longitude) {

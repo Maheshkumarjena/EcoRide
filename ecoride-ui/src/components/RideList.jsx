@@ -6,6 +6,11 @@ const RideList = ({ rides }) => {
   if (!rides || rides.length === 0) {
     return <p className="text-gray-700 dark:text-gray-300">No rides available.</p>;
   }
+  console.log("ride at rideList=======================>", rides);
+
+  let seats=0
+  const seatsAvailable= rides.map((ride) => ride?.riders?.seatsBooked ? seats+=ride.riders.seatsBooked : seats+=0);
+  console.log("seatsAvailable",rides[0]?.riders[0]?.seatsBooked);
 
   return (
     <ul className="space-y-2 mt-4">
@@ -22,10 +27,10 @@ const RideList = ({ rides }) => {
               {format(new Date(ride.startTime), 'MMM dd, yyyy HH:mm')}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Price: ${ride.price}
+              Price: ₹ {ride.farePerSeat}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Seats Available: {ride.seatsAvailable}
+              Seats Available: { ride.totalSeatsAvailable > 0    ? ride.totalSeatsAvailable : "NA"}
             </p>
           </div>
           <div>

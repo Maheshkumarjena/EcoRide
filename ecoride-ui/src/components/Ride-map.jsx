@@ -142,8 +142,8 @@ const RideMap = ({ start, end, stops, via }) => {
 
 
       {console.log("stops at ride-map =============================>",stops)}
-      {stops && stops.length > 1 && stops.map((stop, index) => (
-        <Marker key={`stop-${index}`} position={[stop.coordinates.lat, stop.coordinates.lng]} icon={customIcon}
+      {stops && stops.length > 0 && stops.map((stop, index) => (
+        <Marker key={`stop-${index}`} position={[stop.lat, stop.lng]} icon={customIcon}
           eventHandlers={{
             mouseover: (e) => e.target.openPopup(),
             mouseout: (e) => e.target.closePopup(),

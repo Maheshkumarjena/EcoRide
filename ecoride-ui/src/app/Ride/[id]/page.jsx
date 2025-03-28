@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button" // Using shadcn/ui Button
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Using shadcn/ui Card
 import { Badge } from "@/components/ui/badge" // Using shadcn/ui Badge
 import { Skeleton } from "@/components/ui/skeleton" // Using shadcn/ui Skeleton
+import { getDistanceTime } from '@/lib/utils';
 
 
 const RideMap = dynamic(() => import("@/components/Ride-map"), { ssr: false });
@@ -30,6 +31,8 @@ const RideDetailPage = ({ params }) => {
   const [end, setEnd] = useState(null);
   const [stops, setStops] = useState(null);
   const [via, setVia] = useState(null);
+  const [distance,setDistance]=useState(null);
+  const [time,setTime]=useState(null);
 
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
 
@@ -43,31 +46,63 @@ const RideDetailPage = ({ params }) => {
       setError(null);
 
       try {
-        // Fetch ride details
         const response = await axios.get(`${API_URL}/rides/${id}`, {
           withCredentials: true,
         });
 
-        // Extract coordinates
         const startCoords = response.data.ride.startingPoint.coordinates;
         const destCoords = response.data.ride.destination.coordinates;
 
-        // Get addresses from coordinates
         const startAddress = await getAddressFromCoordinates(startCoords.lat, startCoords.lng, MAP_URL);
         const destinationAddress = await getAddressFromCoordinates(destCoords.lat, destCoords.lng, MAP_URL);
 
-        // Combine ride details
         const rideDetail = {
           ...response.data.ride,
           startAddress,
           destinationAddress,
         };
 
-        // Update state
         setRide(rideDetail);
 
-        // Get coordinates for map
-        getCoords(rideDetail);
+        // Extract start and end coordinates
+        const startPoint = {
+          lat: rideDetail.startingPoint.coordinates.lat,
+          lng: rideDetail.startingPoint.coordinates.lng,
+        };
+        const endPoint = {
+          lat: rideDetail.destination.coordinates.lat,
+          lng: rideDetail.destination.coordinates.lng,
+        };
+
+        // Fetch coordinates for stops
+        const stopsCoords = rideDetail.stops
+          ? await Promise.all(
+              rideDetail.stops.map(async (stop) => {
+                const coords = await getAddressCoordinates(stop, MAP_URL);
+                return { lat: coords.lat, lng: coords.lng };
+              })
+            )
+          : [];
+
+        setStart(startPoint);
+        setEnd(endPoint);
+        setStops(stopsCoords);
+
+        console.log('stop at dynamic ride detail page ========>', stopsCoords);
+
+        // Fetch distance and time after setting start, stops, and end
+        if (startPoint && endPoint) {
+          try {
+            const data = await getDistanceTime(startPoint, stopsCoords, endPoint);
+            console.log('distance time data =============>', data);
+            setDistance(data.distance);
+            setTime(data.time);
+          } catch (error) {
+            console.error('Error in getDistanceTime:', error);
+          }
+        } else {
+          console.log('start or end is null');
+        }
 
       } catch (err) {
         setError(err.message || 'Failed to fetch ride details.');
@@ -76,49 +111,10 @@ const RideDetailPage = ({ params }) => {
       }
     };
 
-    const getCoords = async (ride) => {
-      try {
-        // Extract start and end coordinates
-        const start = {
-          lat: ride.startingPoint.coordinates.lat,
-          lng: ride.startingPoint.coordinates.lng,
-        };
-        const end = {
-          lat: ride.destination.coordinates.lat,
-          lng: ride.destination.coordinates.lng,
-        };
-
-        // Fetch coordinates for stops
-        const stops = ride.stops
-          ? await Promise.all(
-            ride.stops.map((stop) => getAddressCoordinates(stop, MAP_URL))
-          )
-          : [];
-
-        // Via points
-        const via = ride.via ? await Promise.all(
-          ride.stops.map((stops) => {
-            getAddressCoordinates(stops, MAP_URL)
-          })
-        ) : [];
-
-        // Set state for map
-        setStart(start)
-        setEnd(end)
-        setStops(stops)
-        setVia(via)
-
-        return { start, end, stops, via };
-      } catch (error) {
-        console.error('Error in getCoords:', error);
-        throw error;
-      }
-    };
-
-
     fetchRideAndGetCoords();
-
   }, [id]);
+  
+
 
 
 
@@ -203,6 +199,10 @@ const RideDetailPage = ({ params }) => {
     return location;
   };
 
+
+
+
+
   return (
     <div className="p-4 bg-purple-100 dark:bg-gray-900 min-h-screen overflow-y-scroll hide-scrollbar pb-30">
     <h1 className="text-3xl font-bold mb-6 text-purple-800 dark:text-purple-200">
@@ -240,17 +240,17 @@ const RideDetailPage = ({ params }) => {
             <span className="font-medium text-purple-700 dark:text-purple-300">
               Fare Per Seat:
             </span>
-            <p className="text-purple-800 dark:text-purple-200">${ride.farePerSeat}</p>
+            <p className="text-purple-800 dark:text-purple-200">₹ {ride.farePerSeat}</p>
           </div>
           <div className="space-y-2">
             <span className="font-medium text-purple-700 dark:text-purple-300">
-              Vehicle Type:
+              Vehicle Type:  
             </span>
             <Badge
               variant="secondary"
-              className="bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 border-purple-300 dark:border-purple-700"
+              className="bg-purple-200 ml-2 dark:bg-purple-800 text-purple-800 dark:text-purple-200 border-purple-300 dark:border-purple-700"
             >
-              {ride.vehicleType}
+              { ride.vehicleType}
             </Badge>
           </div>
           <div className="space-y-2">
@@ -272,7 +272,7 @@ const RideDetailPage = ({ params }) => {
               Duration:
             </span>
             <p className="text-purple-800 dark:text-purple-200">
-              {ride.duration ? `${ride.duration} seconds` : 'N/A'}
+              {time ? `${(time/60).toFixed(2)} Hrs` : 'N/A'}
             </p>
           </div>
           <div className="space-y-2">
@@ -280,7 +280,7 @@ const RideDetailPage = ({ params }) => {
               Distance:
             </span>
             <p className="text-purple-800 dark:text-purple-200">
-              {ride.distance ? `${ride.distance} meters` : 'N/A'}
+              {distance ? `${distance.toFixed(2)} Km` : 'N/A'}
             </p>
           </div>
           <div className="space-y-2">
@@ -291,8 +291,8 @@ const RideDetailPage = ({ params }) => {
               variant="outline"
               className={
                 ride.rideStatus === 'available'
-                  ? "text-green-500 dark:text-green-400 border-green-500 dark:border-green-400"
-                  : "text-yellow-500 dark:text-yellow-400 border-yellow-500 dark:border-yellow-400"
+                  ? "text-green-500 ml-2 dark:text-green-400 border-green-500 dark:border-green-400"
+                  : "text-red-500 ml-2 dark:text-red-400 border-red-500 dark:border-red-400"
               }
             >
               {ride.rideStatus}

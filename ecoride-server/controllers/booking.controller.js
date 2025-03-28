@@ -4,7 +4,7 @@ import userModel from '../models/user.model.js';
 import { generateOtp } from './ride.contorller.js';
 
 export const createBooking = async (req, res) => {
-  console.log('create bookin hit')
+  console.log('create bookin hit');
   try {
     const { userId, seats } = req.body;
     const { rideId } = req.params; // Get rideId from URL parameters
@@ -27,18 +27,13 @@ export const createBooking = async (req, res) => {
     }
 
     // Check seat availability
-    let bookedSeats = 0;
-    ride.riders.forEach((rider) => {
-      bookedSeats += rider.seatsBooked;
-    });
-
-    if (ride.totalSeatsAvailable - bookedSeats < seats) {
+    if (ride.totalSeatsAvailable < seats) {
       return res.status(400).json({ message: 'Not enough seats available.' });
     }
 
     // Generate OTP
-    const otp =generateOtp(5);
-    console.log("otp generated at booking controller  ==========>", otp)
+    const otp = generateOtp(5);
+    console.log('otp generated at booking controller  ==========>', otp);
 
     // Add rider to the ride
     ride.riders.push({
@@ -46,6 +41,9 @@ export const createBooking = async (req, res) => {
       seatsBooked: seats,
       otp: otp,
     });
+
+    // Update totalSeatsAvailable
+    ride.totalSeatsAvailable -= seats;
 
     await ride.save();
 
