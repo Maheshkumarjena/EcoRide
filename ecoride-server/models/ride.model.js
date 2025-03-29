@@ -21,7 +21,7 @@ const rideSchema = new mongoose.Schema({
             },
             paymentStatus: {
                 type: String,
-                enum: ["pending", "holding", "released"],
+                enum: ["pending", "hold", "released"],
                 default: "pending",
             },
             otp: {

@@ -100,14 +100,16 @@ const BookingPage = ({ params }) => {
         return;
       }
 
-      await axios.post(`${API_URL}/bookings/createBooking/${rideWithAddresses._id}`, {
+      const response=await axios.post(`${API_URL}/bookings/createBooking/${rideWithAddresses._id}`, {
         userId: user._id,
         seats: seatsToBook,
       }, { withCredentials: true });
 
+      console.log("booking response------------------->", response);
+
       setSuccessMessage("Booking successful!");
       toast.success("Booking successful!"); // Use toast here
-      router.push('/profile');
+      router.push(`/Booking/Details/${response.data.rider._id}`);
     } catch (err) {
       console.error("Booking failed:", err.response?.data?.message || err);
       const errorMessage = err.response?.data?.message || "Booking failed. Please try again.";
@@ -185,7 +187,7 @@ const BookingPage = ({ params }) => {
                   min="1"
                   max={ride.totalSeatsAvailable}
                   placeholder="Enter number of seats"
-                  className="mt-1 w-full bg-white dark:bg-gray-800 text-purple-800 dark:text-purple-200 border border-purple-400 dark:border-purple-600 focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 w-full bg-white dark:bg-gray-800 text-purple-800 dark:text-purple-200 border border-solid border-purple-400 dark:border-purple-600 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 

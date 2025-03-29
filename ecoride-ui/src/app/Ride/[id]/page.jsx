@@ -257,7 +257,7 @@ const RideDetailPage = ({ params }) => {
             <span className="font-medium text-purple-700 dark:text-purple-300">
               Total Seats Available:
             </span>
-            <p className="text-purple-800 dark:text-purple-200">{ride.totalSeatsAvailable}</p>
+            <p className="text-purple-800 dark:text-purple-200">{ride.totalSeatsAvailable !=0 ? ride.totalSeatsAvailable : "NA" }</p>
           </div>
           <div className="space-y-2">
             <span className="font-medium text-purple-700 dark:text-purple-300">
@@ -355,11 +355,13 @@ const RideDetailPage = ({ params }) => {
             Back
           </Button>
           <Link href={`/Booking/${ride._id}`}>
+          {ride.totalSeatsAvailable > 0 ? (
             <Button
-              className="bg-purple-500 dark:bg-purple-600 text-white hover:bg-purple-600 dark:hover:bg-purple-700"
+            className="bg-purple-500 dark:bg-purple-600 text-white hover:bg-purple-600 dark:hover:bg-purple-700"
             >
               Book Ride
-            </Button>
+            </Button>): " "
+            }
           </Link>
         </div>
       </CardContent>
