@@ -74,21 +74,32 @@ const RideDetailPage = ({ params }) => {
           lng: rideDetail.destination.coordinates.lng,
         };
 
+        let stopsCoords;
         // Fetch coordinates for stops
-        const stopsCoords = rideDetail.stops
+        if(rideDetail.stops != ''){
+          console.log("stops at error --------------------->",rideDetail.stops)
+
+        stopsCoords = rideDetail.stops
           ? await Promise.all(
               rideDetail.stops.map(async (stop) => {
                 const coords = await getAddressCoordinates(stop, MAP_URL);
                 return { lat: coords.lat, lng: coords.lng };
               })
             )
+
           : [];
+
+        }
+
 
         setStart(startPoint);
         setEnd(endPoint);
+        if(rideDetail.stops != '') {
         setStops(stopsCoords);
 
-        console.log('stop at dynamic ride detail page ========>', stopsCoords);
+        }
+
+        // console.log('stop at dynamic ride detail page ========>', stopsCoords);
 
         // Fetch distance and time after setting start, stops, and end
         if (startPoint && endPoint) {
@@ -303,7 +314,8 @@ const RideDetailPage = ({ params }) => {
               Stops:
             </span>
             <p className="text-purple-800 dark:text-purple-200">
-              {ride.stops ? ride.stops.join(', ') : 'No stops'}
+              {console.log("ride stops at empty stop----------------->",ride.stops)}
+              {ride.stops !== null ? ride.stops.join(',') : 'No stops'}
             </p>
           </div>
           {/* Render riders if needed */}

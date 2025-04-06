@@ -12,16 +12,16 @@ const AuthComponent = ({ user, onSignIn, onSignUp, onSignOut }) => {
   };
 
   return (
-    <div className="relative inline-block">
+    <div className=" inline-block">
       {user ? (
         <div
-          className="flex items-center cursor-pointer hover:bg-purple-200 dark:hover:bg-purple-700 rounded-md p-1 transition-colors duration-200"
+          className="flex items-center cursor-pointer hover:bg-purple-200 dark:hover:bg-purple-700 rounded-full justify-center item-center p-1 transition-colors duration-200 mr-2"
           onClick={handleProfileClick}
         >
           <img
             src={user.profilePic}
             alt="Profile"
-            className="w-8 h-8 rounded-full mr-2"
+            className="w-8 h-8 rounded-full "
           />
           <span className="text-sm text-purple-800 dark:text-purple-200">
             {user.name}
@@ -32,7 +32,7 @@ const AuthComponent = ({ user, onSignIn, onSignUp, onSignOut }) => {
           <Link href='/SignIn'>
           <button
             onClick={onSignIn}
-            className="sm:px-4 cursor-pointer sm:py-2 bg-purple-600 text-white rounded-md hover:bg-purple-500 hover:scale-105 transition-transform duration-200 flex items-center gap-2 text-sm dark:bg-purple-700 dark:text-white hover:brightness-110 px-2 py-[8px] text-xs"
+            className="sm:px-4 cursor-pointer sm:py-2  text-black dark:text-white rounded-md  hover:scale-105 transition-transform duration-200 flex items-center gap-2 text-sm dark:bg-white/10 backdrop-blur-md border  dark:border-white/20 border-black/20 shadow-lg dark:text-white hover:brightness-110 px-2 py-[8px] text-xs"
             >
             <FontAwesomeIcon icon={faUser} />
             Sign In
@@ -41,7 +41,7 @@ const AuthComponent = ({ user, onSignIn, onSignUp, onSignOut }) => {
           <Link href='/SignUp'>
             <button
               onClick={onSignUp}
-              className="sm:px-4 cursor-pointer sm:py-2 bg-purple-700 dark:bg-purple-400 text-white rounded-md dark:hover:bg-purple-600 hover:bg-purple-600 hover:scale-105 transition-transform duration-200 flex items-center gap-2 text-sm dark:bg-purple-600 dark:text-white hover:brightness-110 px-2 py-[8px] text-xs"
+              className="sm:px-4 cursor-pointer sm:py-2 dark:text-white text-black rounded-md hover:bg-purple-600 hover:scale-105 transition-transform duration-200 flex items-center gap-2 text-sm  dark:bg-white/10 backdrop-blur-md border dark:border-white/20 border-black/20 shadow-lg dark:text-white dark:hover:bg-purple-900  px-2 py-[8px] text-xs"
             >
               <FontAwesomeIcon icon={faArrowRightToBracket} />
               Sign Up

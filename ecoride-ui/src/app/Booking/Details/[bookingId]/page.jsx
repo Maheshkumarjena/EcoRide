@@ -109,13 +109,13 @@ const BookingConfirmationPage = () => {
     };
 
     return (
-        <div className="min-h-[90vh] bg-purple-50 dark:bg-purple-900 text-purple-800 dark:text-purple-200 overflow-y-scroll  pb-[11vh] py-8">
+        <div className="min-h-[90vh] h-[100vh]  text-purple-800 dark:text-purple-200 overflow-y-scroll  pb-[11vh] py-8">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-bold mb-6 text-purple-900 dark:text-purple-100">
                     Booking Confirmation
                 </h1>
 
-                <Card className="bg-white dark:bg-purple-800 shadow-lg border border-purple-200 dark:border-purple-700">
+                <Card className="bg-white dark:bg-transparent  bg-purple-200 shadow-xl border border-purple-200 dark:border-purple-700">
                     <CardHeader>
                         <CardTitle className="text-2xl font-semibold text-purple-900 dark:text-purple-100 flex items-center gap-2">
                             Booking Details
