@@ -1,4 +1,9 @@
-import RideMap from "@/components/RideMap";
+'use client'
+import dynamic from "next/dynamic";
+
+const DynamicRideMap = dynamic(() => import("@/components/Ride-map"), {
+  ssr: false,
+});
 
 const RideMapPage = () => {
   const start = { lat: 28.7041, lng: 77.1025 }; // Example: Delhi
@@ -7,7 +12,7 @@ const RideMapPage = () => {
   return (
     <div>
       <h1>Find a Ride</h1>
-      <RideMap start={start} end={end} />
+      <DynamicRideMap start={start} end={end} />
     </div>
   );
 };
