@@ -17,19 +17,19 @@ export default function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState(""); // New state for error messages
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success messages
   const router = useRouter();
-
-  // Backend URL should be placed in an environment variable
   const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "https://ecoride-m6zs.onrender.com";
   console.log("server url:", API_URL);
 
   const registerUser = async () => {
     setLoading(true);
+    setErrorMessage(""); // Clear any previous errors
+    setSuccessMessage(""); // Clear any previous success messages
 
     if (!firstname || !lastname || !email || !password) {
-      alert("All fields are required!");
+      setErrorMessage("All fields are required!");
       setLoading(false);
       return;
     }
@@ -43,17 +43,19 @@ export default function SignupForm() {
       });
       console.log("User registered successfully:", response.data);
       setLoading(false);
+      setSuccessMessage("User registered successfully. Redirecting to sign in page...");
       toast.success("User registered successfully. Redirecting to sign in page...");
       setTimeout(() => {
         router.push('/SignIn');
-        setMessage("");
+        setSuccessMessage("");
       }, 2000);
     } catch (error) {
       console.error("Error registering user:", error.response?.data || error.message);
       setLoading(false);
+      setErrorMessage(error.response?.data.message || error.message);
       toast.error(`Error: ${error.response?.data.message || error.message}`);
       setTimeout(() => {
-        setMessage("");
+        setErrorMessage("");
       }, 2000);
     }
   };
@@ -68,7 +70,7 @@ export default function SignupForm() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1, ease: "easeInOut" }}
-      className="my-[10vh] w-md w-full mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900"
+      className="my-[10vh] mt-[20vh] w-md w-full mx-auto rounded-xl md:rounded-2xl p-4 md:p-8 shadow-input bg-purple-200 dark:bg-purple-900"
     >
       <h2 className="font-bold text-xl text-purple-800 dark:text-purple-200">Welcome to EcoRide</h2>
       <p className="text-purple-600 text-sm max-w-sm mt-2 dark:text-purple-300">Join the Ride, Change the Future!</p>
@@ -156,22 +158,21 @@ export default function SignupForm() {
         </div>
       </form>
       {loading && <Loader />}
-      {message && <p className="text-purple-800 dark:text-purple-200">{message}</p>}
+      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>} {/* Display error message */}
+      {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>} {/* Display success message */}
     </motion.div>
   );
 }
 
 // Bottom gradient effect
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
-    </>
-  );
-};
+const BottomGradient = () => (
+  <>
+    <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
+    <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
+  </>
+);
 
 // Wrapper for label and input
-const LabelInputContainer = ({ children, className }) => {
-  return <div className={cn("flex flex-col space-y-2 w-full", className)}>{children}</div>;
-};
+const LabelInputContainer = ({ children, className }) => (
+  <div className={cn("flex flex-col space-y-2 w-full", className)}>{children}</div>
+);

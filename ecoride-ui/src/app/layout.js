@@ -23,14 +23,14 @@ export default function RootLayout({ children }) {
           >
             <SidebarProvider>
               <AppSidebar />
-              <BackgroundBeamsWithCollision className="h-screen     ">
+              {/* <BackgroundBeamsWithCollision className="h-screen     "> */}
                 <div className="h-screen flex flex-col w-screen hide-scrollbar ">
                   {children}
                   <Toaster/>
                 </div>
                 <Navbar />
 
-              </BackgroundBeamsWithCollision>
+              {/* </BackgroundBeamsWithCollision> */}
             </SidebarProvider>
           </ThemeProvider>
         </ReduxProvider>

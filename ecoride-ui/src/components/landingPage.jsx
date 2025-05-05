@@ -1,12 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { toast } from 'sonner';
 
 const CarpoolLandingPage = () => {
   return (
     <div className="font-sans">
       {/* Hero Section */}
-          
       <section
         className="bg-cover bg-center h-screen flex items-center justify-center text-gray-800 dark:text-gray-200"
         style={{ backgroundImage: "url('car-pool.jpg')" }}
@@ -15,9 +13,9 @@ const CarpoolLandingPage = () => {
           <h1 className="text-5xl font-bold mb-6 text-purple-800 dark:text-purple-200">Ride Smarter, Save Together</h1>
           <p className="text-2xl mb-8 text-purple-800 dark:text-purple-300">Join the carpooling revolution and share rides with ease.</p>
           <Link href='/Ride'>
-          <button className="bg-purple-300 cursor-pointer text-purple-800 px-6 py-3 rounded hover:bg-purple-400 dark:bg-purple-700 dark:text-purple-200 dark:hover:bg-purple-800 transition-colors duration-300">
-            Get Started
-          </button>
+            <button className="bg-purple-300 cursor-pointer text-purple-800 px-6 py-3 rounded hover:bg-purple-400 dark:bg-purple-700 dark:text-purple-200 dark:hover:bg-purple-800 transition-colors duration-300">
+              Get Started
+            </button>
           </Link>
         </div>
       </section>
@@ -64,9 +62,9 @@ const CarpoolLandingPage = () => {
       <section className="py-16 px-4 pb-30 bg-purple-200 dark:bg-gray-800 text-purple-800 dark:text-purple-200 text-center">
         <h2 className="text-4xl font-bold mb-8">Ready to Start Carpooling?</h2>
         <Link href="/SignUp">
-        <button className="bg-white cursor-pointer text-purple-600 dark:bg-purple-200 dark:text-purple-800 px-8 py-3 rounded hover:bg-gray-100 dark:hover:bg-gray-300 transition-colors duration-300">
-          Join Now
-        </button>
+          <button className="bg-white cursor-pointer text-purple-600 dark:bg-purple-200 dark:text-purple-800 px-8 py-3 rounded hover:bg-gray-100 dark:hover:bg-gray-300 transition-colors duration-300">
+            Join Now
+          </button>
         </Link>
       </section>
     </div>
