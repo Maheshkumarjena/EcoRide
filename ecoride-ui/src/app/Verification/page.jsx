@@ -47,12 +47,14 @@ const VerifyEmail = () => {
   const sendVerificationEmail = async (userEmail) => {
     setLoading(true);
     try {
-      const response = await axios.post("https://ecoride-m6zs.onrender.com/users/getOtp", {
+      const response = await axios.post("http://localhost:3002/users/getOtp", {
         email: userEmail,
       });
 
-      if (response.statusText !== "OK")
-        throw new Error(response.message || "Failed to get verification code.");
+      console.log(response.statusText)
+
+      // if (response.statusText !== "OK")
+      //   throw new Error(response.message || "Failed to get verification code.");
 
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
