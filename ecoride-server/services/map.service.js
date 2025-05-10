@@ -73,6 +73,7 @@ export const processRides= async (rides, apiKey)=> {
           return null; // Skip null or incomplete rides
       }
 
+      console.log('at map service ride 76 line', ride);
       const startLat = ride.startingPoint.coordinates.lat;
       const startLng = ride.startingPoint.coordinates.lng;
       const destLat = ride.destination.coordinates.lat;
