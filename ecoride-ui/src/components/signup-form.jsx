@@ -64,7 +64,7 @@ export default function SignupForm() {
     e.preventDefault();
     registerUser();
   };
-
+ 
   return (
     <motion.div
       initial={{ opacity: 0 }}

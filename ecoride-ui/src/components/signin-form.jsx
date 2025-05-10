@@ -52,7 +52,7 @@ export default function SigninForm() {
       localStorage.setItem('user', JSON.stringify(userDataWithExpiration));
 
       setTimeout(() => {
-        router.back();
+        router.push('/');
         setMessages("");
       }, 2000);
     } catch (error) {

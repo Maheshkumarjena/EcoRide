@@ -32,7 +32,7 @@ const ThemeAuth = () => {
   if (!loaded) return null;
 
   return (
-    <div className="absolute top-0 right-0 p-4 flex flex-row w-full justify-between">
+    <div className="sticky  p-4 flex flex-row w-full justify-between">
       <DarkModeToggle  />
       <AuthComponent user={user} />
     </div>

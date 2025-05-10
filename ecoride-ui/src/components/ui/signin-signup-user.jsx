@@ -19,9 +19,9 @@ const AuthComponent = ({ user, onSignIn, onSignUp, onSignOut }) => {
           onClick={handleProfileClick}
         >
           <img
-            src={user.profilePic}
+            src={user.profilePicture || "/default-user.webp"}
             alt="Profile"
-            className="w-8 h-8 rounded-full "
+            className="w-8 h-8 dark:bg-purple-400  rounded-full "
           />
           <span className="text-sm text-purple-800 dark:text-purple-200">
             {user.name}
