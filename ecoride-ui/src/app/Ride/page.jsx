@@ -19,7 +19,7 @@ const RidePage = () => {
 
             const storedUser = localStorage.getItem('user');
 
-            if (storedUser) {
+            if (storedUser.verified) {
                 const userData = JSON.parse(storedUser);
                 const currentTime = Date.now();
 

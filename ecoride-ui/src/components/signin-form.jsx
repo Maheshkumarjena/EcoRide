@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Loader from "./ui/Loader";
 import { toast } from "sonner";
+import { Verified } from "lucide-react";
 
 export default function SigninForm() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function SigninForm() {
       // Store user details in local storage for 1 hour
       const userData = response.data.user; // Assuming response.data.user contains user details
       const expirationTime = Date.now() + 3600000; // 1 hour in milliseconds
-      const userDataWithExpiration = { ...userData, expiration: expirationTime };
+      const userDataWithExpiration = { ...userData, expiration: expirationTime , Verified: false };
       localStorage.setItem('user', JSON.stringify(userDataWithExpiration));
 
       setTimeout(() => {

@@ -112,6 +112,9 @@ const VerifyEmail = () => {
       }
   
       setMessage("Email verified successfully!");
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const userWithVerification={...userData, Verified: true}
+      localStorage.setItem('user',userWithVerification)
       setIsVerified(true);
       setTimeout(() => {
         setMessage("");
