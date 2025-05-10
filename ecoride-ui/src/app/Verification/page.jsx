@@ -99,7 +99,7 @@ const VerifyEmail = () => {
   
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3002/users/verifyOtp", {
+      const response = await axios.post("https://ecoride-m6zs.onrender.com/users/verifyOtp", {
         email,
         verificationCode: code,
       });
