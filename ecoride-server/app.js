@@ -16,10 +16,20 @@ connectToDb();
 
 const FRONTEND_DOMAIN=process.env.NEXT_FRONTEND_URL || "https://eco-ride-virid.vercel.app";
 console.log("FRONTEND_DOMAIN",FRONTEND_DOMAIN);
-app.use(cors({
-    origin: FRONTEND_DOMAIN,
-    credentials: true
-  }));
+const allowedOrigins = ["http://localhost:3000", "https://eco-ride-virid.vercel.app"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
   app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
