@@ -47,7 +47,7 @@ const VerifyEmail = () => {
   const sendVerificationEmail = async (userEmail) => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3002/users/getOtp", {
+      const response = await axios.post("https://ecoride-m6zs.onrender.com/users/getOtp", {
         email: userEmail,
       });
 
