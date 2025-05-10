@@ -14,6 +14,8 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const API_URL = process.env.SERVER_URL || "https://ecoride-m6zs.onrender.com";
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -47,7 +49,7 @@ const VerifyEmail = () => {
   const sendVerificationEmail = async (userEmail) => {
     setLoading(true);
     try {
-      const response = await axios.post("https://ecoride-m6zs.onrender.com/users/getOtp", {
+      const response = await axios.post(`${API_URL}/users/getOtp`, {
         email: userEmail,
       });
 
@@ -99,7 +101,7 @@ const VerifyEmail = () => {
   
     setLoading(true);
     try {
-      const response = await axios.post("https://ecoride-m6zs.onrender.com/users/verifyOtp", {
+      const response = await axios.post(`${API_URL}/users/verifyOtp`, {
         email,
         verificationCode: code,
       });
@@ -113,8 +115,9 @@ const VerifyEmail = () => {
   
       setMessage("Email verified successfully!");
       const userData = JSON.parse(localStorage.getItem("user"));
-      const userWithVerification={...userData, Verified: true}
-      localStorage.setItem('user',userWithVerification)
+      console.log("userData =>",userData)
+      const userWithVerification={...userData, isVerified: true}
+      localStorage.setItem('user',JSON.stringify(userWithVerification))
       setIsVerified(true);
       setTimeout(() => {
         setMessage("");

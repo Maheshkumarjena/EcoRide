@@ -14,7 +14,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Loader from "./ui/Loader";
 import { toast } from "sonner";
-import { Verified } from "lucide-react";
 
 export default function SigninForm() {
   const router = useRouter();

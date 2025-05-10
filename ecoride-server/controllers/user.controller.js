@@ -63,9 +63,9 @@ export const verifyOtp = async (req, res, next) => {
         // Check if the verification code matches and is not expired
         if (user.verificationCode == verificationCode && user.verificationCodeExpiresAt > Date.now()) {
           // Verification successful
-          user.verified = true; // Mark the user as verified
+          user.isVerified = true; // Mark the user as verified
           user.verificationCode = undefined; // Clear the verification code
-          user.verificationCodeExpires = undefined; // Clear the expiration date
+          user.verificationCodeExpiresAt = undefined; // Clear the expiration date
           await user.save();
     
           res.status(200).json({ message: 'Email verified successfully.' });

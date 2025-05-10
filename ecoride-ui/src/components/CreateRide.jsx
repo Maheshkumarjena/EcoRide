@@ -56,18 +56,21 @@ const CreateRide = () => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
+    console.log("Stored User at create ride :", storedUser);
+    const userData = JSON.parse(storedUser);
 
-    if (storedUser.verified) {
-      const userData = JSON.parse(storedUser);
+    if (userData?.isVerified) {
       const currentTime = Date.now();
 
       if (userData.expiration && currentTime < userData.expiration) {
         setUser(userData);
       } else {
+        console.log("User expired");
         localStorage.removeItem('user');
         router.push('/SignIn');
       }
     } else {
+      console.log("User not verified");
       router.push('/SignIn');
     }
   }, [router]);

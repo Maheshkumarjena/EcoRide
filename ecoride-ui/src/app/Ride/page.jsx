@@ -18,9 +18,11 @@ const RidePage = () => {
         if (effectRan.current === false) {
 
             const storedUser = localStorage.getItem('user');
+            console.log('user from local storage', storedUser)
 
-            if (storedUser.verified) {
+            if (storedUser) {
                 const userData = JSON.parse(storedUser);
+                console.log('user data from local storage', userData)
                 const currentTime = Date.now();
 
                 if (userData.expiration && currentTime < userData.expiration) {

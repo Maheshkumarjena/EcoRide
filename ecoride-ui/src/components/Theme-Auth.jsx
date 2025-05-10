@@ -9,6 +9,7 @@ const ThemeAuth = () => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    console.log("user from local storage", storedUser);
 
     if (storedUser) {
       try {
